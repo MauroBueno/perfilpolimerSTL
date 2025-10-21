@@ -1,0 +1,39 @@
+PROGRAM Segment1
+TON_Segment1(not TON_Segment1.q,);
+R_TRIG_Segment1(TON_Segment1.q);
+
+if R_TRIG_Segment1.q THEN
+	Step_Segment1:=Step_Segment1+1;
+END_IF;
+
+
+CASE Step_Segment1 OF
+
+    1: MSG_MODBUS_Part1(TON_Segment1.q,,,,Part1_Data);
+	2: MSG_MODBUS_Part2(TON_Segment1.q,,,,Part2_Data);
+	3: MSG_MODBUS_Part3(TON_Segment1.q,,,,Part3_Data);
+	4: MSG_MODBUS_Part4(TON_Segment1.q,,,,Part4_Data);
+   
+	
+	ELSE Step_Segment1 :=0;
+END_CASE;
+
+    DATA_1[9]:=  ANY_TO_INT(MSG_MODBUS_Part4.ErrorID);
+	DATA_1[19]:=  ANY_TO_INT(MSG_MODBUS_Part1.ErrorID);
+    DATA_1[29]:=  ANY_TO_INT(MSG_MODBUS_Part2.ErrorID);
+    DATA_1[39]:=  ANY_TO_INT(MSG_MODBUS_Part3.ErrorID);
+
+FOR I0:=1 TO 4 BY 1 DO
+
+	DATA_1[I0] :=  ANY_TO_INT(Part4_Data[I0]);
+	I1:=I0+10;
+	DATA_1[I1] :=  ANY_TO_INT(Part1_Data[I0]);
+	I2:=I0+20;
+	DATA_1[I2] :=  ANY_TO_INT(Part2_Data[I0]);
+	I3:=I0+30;
+    DATA_1[I3] :=  ANY_TO_INT(Part3_Data[I0]);
+END_FOR;
+
+
+
+END_PROGRAM

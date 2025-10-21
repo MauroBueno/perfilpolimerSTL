@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DevicePreferences xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Micro800ConnectionPath>APCNXAN3BMRFH2!AB_ETHIP-1\192.168.10.2\Backplane\3\A\192.168.100.128</Micro800ConnectionPath>
+</DevicePreferences>

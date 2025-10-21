@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Pou FileVersion="200.00.006" Name="Segment1" ElementGuid="039467e7-c043-4bcd-8062-2979386a2155" Comment="" SingleTextLine="" Language="ST" Localization="Prj" GenDebugInfo="false" UseResPassword="true" GenerateSymbMon="true" Is1499="false" CustomFbd="0" GroupName="(Definido pelo usuário)">
+  <Program />
+  <LocalVars>
+    <Variable Name="TON_Segment1" Comment="" Address="" Alias="" StringSize="0" DataType="TON" InitialValue=",T#300MS" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="R_TRIG_Segment1" Comment="" Address="" Alias="" StringSize="0" DataType="R_TRIG" InitialValue="" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="MSG_MODBUS_Part1" Comment="LCDA" Address="" Alias="" StringSize="0" DataType="MSG_MODBUS" InitialValue="2(),(5,0,3,4),(7,2),,0" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="MSG_MODBUS_Part2" Comment="LCDA" Address="" Alias="" StringSize="0" DataType="MSG_MODBUS" InitialValue="2(),(5,0,3,4),(7,3),,0" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="MSG_MODBUS_Part3" Comment="LCDA" Address="" Alias="" StringSize="0" DataType="MSG_MODBUS" InitialValue="2(),(5,0,3,4),(7,4),,0" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="Step_Segment1" Comment="" Address="" Alias="" StringSize="0" DataType="BYTE" InitialValue="" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="MSG_MODBUS_Part4" Comment="" Address="" Alias="" StringSize="0" DataType="MSG_MODBUS" InitialValue="2(),(5,0,3,4),(7,1),,0" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="I0" Comment="" Address="" Alias="" StringSize="0" DataType="DINT" InitialValue="" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="I1" Comment="" Address="" Alias="" StringSize="0" DataType="DINT" InitialValue="" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="I2" Comment="" Address="" Alias="" StringSize="0" DataType="DINT" InitialValue="" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="I3" Comment="" Address="" Alias="" StringSize="0" DataType="DINT" InitialValue="" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="Part4_Data" Comment="" Address="" Alias="" StringSize="0" DataType="MODBUSLOCADDR" InitialValue="" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="Part1_Data" Comment="" Address="" Alias="" StringSize="0" DataType="MODBUSLOCADDR" InitialValue="" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="Part2_Data" Comment="" Address="" Alias="" StringSize="0" DataType="MODBUSLOCADDR" InitialValue="" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+    <Variable Name="Part3_Data" Comment="" Address="" Alias="" StringSize="0" DataType="MODBUSLOCADDR" InitialValue="" Modifier="NonRetain" Kind="Var" AccessRights="ReadWrite" RetainFlags="" CommentFields="" Attributes="0" GroupName="" />
+  </LocalVars>
+  <PouBody><![CDATA[PROGRAM Segment1
+TON_Segment1(not TON_Segment1.q,);
+R_TRIG_Segment1(TON_Segment1.q);
+
+if R_TRIG_Segment1.q THEN
+	Step_Segment1:=Step_Segment1+1;
+END_IF;
+
+
+CASE Step_Segment1 OF
+
+    1: MSG_MODBUS_Part1(TON_Segment1.q,,,,Part1_Data);
+	2: MSG_MODBUS_Part2(TON_Segment1.q,,,,Part2_Data);
+	3: MSG_MODBUS_Part3(TON_Segment1.q,,,,Part3_Data);
+	4: MSG_MODBUS_Part4(TON_Segment1.q,,,,Part4_Data);
+   
+	
+	ELSE Step_Segment1 :=0;
+END_CASE;
+
+    DATA_1[9]:=  ANY_TO_INT(MSG_MODBUS_Part4.ErrorID);
+	DATA_1[19]:=  ANY_TO_INT(MSG_MODBUS_Part1.ErrorID);
+    DATA_1[29]:=  ANY_TO_INT(MSG_MODBUS_Part2.ErrorID);
+    DATA_1[39]:=  ANY_TO_INT(MSG_MODBUS_Part3.ErrorID);
+
+FOR I0:=1 TO 4 BY 1 DO
+
+	DATA_1[I0] :=  ANY_TO_INT(Part4_Data[I0]);
+	I1:=I0+10;
+	DATA_1[I1] :=  ANY_TO_INT(Part1_Data[I0]);
+	I2:=I0+20;
+	DATA_1[I2] :=  ANY_TO_INT(Part2_Data[I0]);
+	I3:=I0+30;
+    DATA_1[I3] :=  ANY_TO_INT(Part3_Data[I0]);
+END_FOR;
+
+
+
+END_PROGRAM]]></PouBody>
+  <PouUIProperties>
+    <Root Version="6">
+  <LanguageContainerStyle CommentTextColor="Green" CommentFont="Courier New, 10pt" PonctuationTextColor="Black" PonctuationFont="Courier New, 10pt" IdentifierTextColor="Black" IdentifierFont="Courier New, 10pt" OperatorTextColor="Black" OperatorFont="Courier New, 10pt" ReservedWordTextColor="Fuchsia" ReservedWordFont="Courier New, 10pt" PouTextColor="BlueViolet" PouFont="Courier New, 10pt" NumberTextColor="Firebrick" NumberFont="Courier New, 10pt" StringTextColor="Gray" StringFont="Courier New, 10pt" EditorTextAreaBackgroundColor="White" EditorFont="Courier New, 10pt" Index="0" />
+</Root>
+  </PouUIProperties>
+</Pou>

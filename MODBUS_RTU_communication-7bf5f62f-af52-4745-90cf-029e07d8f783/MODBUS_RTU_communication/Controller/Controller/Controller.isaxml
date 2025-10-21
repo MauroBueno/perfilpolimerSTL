@@ -1,0 +1,472 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Name="Controller" ElementGuid="a0528344-004c-43f9-9150-1d7115b56df1" FileVersion="200.00.006" Comment="" SingleTextLine="template" DbVersion="05.50.12" LibraryType="Project" LegacyBinding="true" Password="" ReadOnly="false">
+  <FileHeader CompanyName="Rockwell Automation Canada, Ltd." ProductName="CAM ISaGRAF 5" CompanyUrl="http://www.isagraf.com" ProductVersion="0" />
+  <Libraries />
+  <DefineWords>
+    <DefineWord Name="IRQ_STI2" Define="131072" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_STI3" Define="262144" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_UFR" Define="1" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_EII0" Define="2" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_EII1" Define="4" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_EII2" Define="8" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_EII3" Define="16" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_UPM0" Define="524288" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_EII4" Define="2048" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_UPM1" Define="1048576" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_EII5" Define="4096" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_STI0" Define="32768" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_STI1" Define="65536" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_HSC0" Define="32" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_HSC1" Define="64" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_HSC2" Define="128" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_HSC3" Define="256" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_HSC4" Define="512" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_HSC5" Define="1024" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_EII6" Define="8192" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_EII7" Define="16384" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_UPM2" Define="2097152" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_UPM3" Define="4194304" Comment="" Access="ReadOnly" />
+    <DefineWord Name="IRQ_UPM4" Define="8388608" Comment="" Access="ReadOnly" />
+  </DefineWords>
+  <DataTypes>
+    <DataType Name="MODBUSLOCADDR" Comment="" Attributes="0" Access="ReadOnly">
+      <Array Order="6" DataType="WORD" StringSize="0">
+        <Dimension Lower="1" Upper="125" />
+      </Array>
+    </DataType>
+    <DataType Name="MODBUS2NODEADDR" Comment="" Attributes="3" Access="ReadOnly">
+      <Array Order="7" DataType="USINT" StringSize="0">
+        <Dimension Lower="0" Upper="3" />
+      </Array>
+    </DataType>
+    <DataType Name="IPADDR" Comment="" Attributes="3" Access="ReadOnly">
+      <Array Order="8" DataType="USINT" StringSize="0">
+        <Dimension Lower="0" Upper="3" />
+      </Array>
+    </DataType>
+    <DataType Name="CIPMEMBERID" Comment="" Attributes="3" Access="ReadOnly">
+      <Array Order="9" DataType="UINT" StringSize="0">
+        <Dimension Lower="0" Upper="2" />
+      </Array>
+    </DataType>
+    <DataType Name="ASCIILOCADDR" Comment="" Attributes="0" Access="ReadOnly">
+      <Array Order="10" DataType="BYTE" StringSize="0">
+        <Dimension Lower="1" Upper="82" />
+      </Array>
+    </DataType>
+    <DataType Name="IRQSTI" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="37">
+        <Variable Name="AS" DataType="BOOL" Comment="Inicialização automática" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="ENABLED" DataType="BOOL" Comment="Função Ativada" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="PE" DataType="BOOL" Comment="Interrupção do Usuário Pendente" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="LS" DataType="BOOL" Comment="Interrupção do Usuário Perdida" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="EX" DataType="BOOL" Comment="Executando Interrupção do Usuário" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="SP" DataType="UINT" Comment="Número de milissegundos entre interrupções" StringSize="0" Order="6" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="IRQHSC" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="38">
+        <Variable Name="AS" DataType="BOOL" Comment="Inicialização automática" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="ENABLED" DataType="BOOL" Comment="Função Ativada" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="PE" DataType="BOOL" Comment="Interrupção do Usuário Pendente" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="LS" DataType="BOOL" Comment="Interrupção do Usuário Perdida" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="EX" DataType="BOOL" Comment="Executando Interrupção do Usuário" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="MV" DataType="BOOL" Comment="Máscara para IV" StringSize="0" Order="6" Attributes="0" />
+        <Variable Name="MN" DataType="BOOL" Comment="Máscara para IN" StringSize="0" Order="7" Attributes="0" />
+        <Variable Name="MH" DataType="BOOL" Comment="Máscara para IH" StringSize="0" Order="8" Attributes="0" />
+        <Variable Name="ML" DataType="BOOL" Comment="Máscara para IL" StringSize="0" Order="9" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="DOYDATA" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="39">
+        <Variable Name="Enable" DataType="BOOL" Comment="Habilitar (VERDADEIRO:habilitar; FALSO:desabilitar)" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="YearlyCenturial" DataType="BOOL" Comment="Sinalizador de temporizador (FALSO: Temporizador anual; VERDADEIRO: Temporizador centurial)" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="YearOn" DataType="UINT" Comment="Valor do ano ativado (deve estar no conjunto [2000...2098])" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="MonthOn" DataType="USINT" Comment="Valor do mês ativado (deve estar no conjunto [1...12])" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="DayOn" DataType="USINT" Comment="Valor do dia ativado (deve estar no conjunto [1...31], determinado pelo valor de &quot;MêsAtivado&quot;)" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="YearOff" DataType="UINT" Comment="Valor do ano desativado (deve estar no conjunto [2000...2098])" StringSize="0" Order="6" Attributes="0" />
+        <Variable Name="MonthOff" DataType="USINT" Comment="Valor do mês desativado (deve estar no conjunto [1...12])" StringSize="0" Order="7" Attributes="0" />
+        <Variable Name="DayOff" DataType="USINT" Comment="Valor do dia desativado (deve estar no conjunto [1...31], determinado pelo valor de &quot;MêsDesativado&quot;)" StringSize="0" Order="8" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="PLS" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="40">
+        <Variable Name="HscHP" DataType="DINT" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="HscLP" DataType="DINT" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="HscHPOutPut" DataType="UDINT" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="HscLPOutPut" DataType="UDINT" Comment="" StringSize="0" Order="4" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="AWAAWT" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="41">
+        <Variable Name="Channel" DataType="UINT" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="Length" DataType="UINT" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="Cancel" DataType="BOOL" Comment="" StringSize="0" Order="3" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="GAIN_PID" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="42">
+        <Variable Name="DirectActing" DataType="BOOL" Comment="''" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="ProportionalGain" DataType="REAL" Comment="''" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="TimeIntegral" DataType="REAL" Comment="''" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="TimeDerivative" DataType="REAL" Comment="''" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="DerivativeGain" DataType="REAL" Comment="''" StringSize="0" Order="5" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="AHLI" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="43">
+        <Variable Name="Channel" DataType="UINT" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="ClrRts" DataType="BOOL" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="SetRts" DataType="BOOL" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="Cancel" DataType="BOOL" Comment="" StringSize="0" Order="4" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="MODBUSLOCPARA" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="44">
+        <Variable Name="Channel" DataType="UINT" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="TriggerType" DataType="USINT" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="Cmd" DataType="USINT" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="ElementCnt" DataType="UINT" Comment="" StringSize="0" Order="4" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="MODBUSTARPARA" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="45">
+        <Variable Name="Addr" DataType="UDINT" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="Node" DataType="USINT" Comment="" StringSize="0" Order="2" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="MODBUS2LOCPARA" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="46">
+        <Variable Name="Channel" DataType="UINT" Comment="Número do canal local" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="TriggerType" DataType="UDINT" Comment="0 = Disparo único, n = Disparo cíclico" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="Cmd" DataType="USINT" Comment="Comando do Modbus" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="ElementCnt" DataType="UINT" Comment="Nº de elementos para leitura/gravação" StringSize="0" Order="4" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="MODBUS2TARPARA" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="47">
+        <Variable Name="Addr" DataType="UDINT" Comment="Endereço de dados do Modbus do destino" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="NodeAddress" DataType="MODBUS2NODEADDR" Comment="Endereço do nó de destino" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="Port" DataType="UINT" Comment="Número da porta TCP de destino" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="UnitId" DataType="USINT" Comment="Identificador de unidade" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="MsgTimeout" DataType="UDINT" Comment="Tempo limite da mensagem (em milissegundos)" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="ConnTimeout" DataType="UDINT" Comment="Tempo limite da conexão (em milissegundos)" StringSize="0" Order="6" Attributes="0" />
+        <Variable Name="ConnClose" DataType="BOOL" Comment="Comportamento de encerramento da conexão" StringSize="0" Order="7" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="CIPCONTROLCFG" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="48">
+        <Variable Name="Cancel" DataType="BOOL" Comment="Cancelar a execução da mensagem" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="TriggerType" DataType="UDINT" Comment="0 - Disparo único, n - Disparo cíclico" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="StrMode" DataType="USINT" Comment="parâmetro reservado" StringSize="0" Order="3" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="CIPTARGETCFG" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="49">
+        <Variable Name="Path" DataType="STRING" Comment="Caminho de destino de CIP" StringSize="80" Order="1" Attributes="0" />
+        <Variable Name="CipConnMode" DataType="USINT" Comment="0 - Não conectado, 1 - Conexão de classe3" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="UcmmTimeout" DataType="UDINT" Comment=" Tempo limite da mensagem não conectada." StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="ConnMsgTimeout" DataType="UDINT" Comment=" Tempo limite da mensagem conectado." StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="ConnClose" DataType="BOOL" Comment="TRUE: fechar a conexão CIP após a conclusão da mensagem" StringSize="0" Order="5" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="CIPAPPCFG" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="50">
+        <Variable Name="Service" DataType="USINT" Comment="Código do serviço CIP: 1 - 127" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="Class" DataType="UINT" Comment="ID da classe CIP: 1 - 65.535" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="Instance" DataType="UDINT" Comment="ID da instância CIP: 0 - 0xFFFFFFFF" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="Attribute" DataType="UINT" Comment="Atributo CIP: 1 - 65.535, 0 - Nenhum atributo" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="MemberCnt" DataType="USINT" Comment="Contagem da ID do membro CIP: 1 - 3, 0 - Nenhuma" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="MemberId" DataType="CIPMEMBERID" Comment="ID do membro CIP: 0 - 65.535" StringSize="0" Order="6" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="CIPSYMBOLICCFG" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="51">
+        <Variable Name="Service" DataType="USINT" Comment="0 - Leitura, 1 - Gravação" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="Symbol" DataType="STRING" Comment="Nome do símbolo para leitura/gravação" StringSize="80" Order="2" Attributes="0" />
+        <Variable Name="Count" DataType="UINT" Comment="Número de variáveis para leitura/gravação. 1 - 65.535." StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="DataType" DataType="USINT" Comment="Símbolo de tipo de dados" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="Offset" DataType="USINT" Comment="&quot;Offset&quot; de bytes da variável para leitura/gravação. 0 - 0xffffffff" StringSize="0" Order="5" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="CIPSTATUS" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="52">
+        <Variable Name="Error" DataType="BOOL" Comment="VERDADEIRO: erro na execução da mensagem" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="ErrorID" DataType="UINT" Comment="Código de erro" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="SubErrorID" DataType="UINT" Comment="Código de suberro" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="ExtErrorID" DataType="UINT" Comment="Código de erro de status estendido de CIP" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="StatusBits" DataType="UINT" Comment="Status da execução da mensagem." StringSize="0" Order="5" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="ABLACB" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="53">
+        <Variable Name="Channel" DataType="UINT" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="TriggerType" DataType="USINT" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="Cancel" DataType="BOOL" Comment="" StringSize="0" Order="3" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="ARDARL" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="54">
+        <Variable Name="Channel" DataType="UINT" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="Length" DataType="UINT" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="Cancel" DataType="BOOL" Comment="" StringSize="0" Order="3" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="AT_PARAM" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="55">
+        <Variable Name="Load" DataType="REAL" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="Deviation" DataType="REAL" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="Step" DataType="REAL" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="ATDynaSet" DataType="REAL" Comment="" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="ATReset" DataType="BOOL" Comment="" StringSize="0" Order="5" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="AXIS_REF" Comment="" Attributes="1" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="56">
+        <Variable Name="AxisNo" DataType="USINT" Comment="" StringSize="0" Order="1" Attributes="2" />
+        <Variable Name="ErrorFlag" DataType="BOOL" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="AxisHomed" DataType="BOOL" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="ConstVel" DataType="BOOL" Comment="" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="AccelFlag" DataType="BOOL" Comment="" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="DecelFlag" DataType="BOOL" Comment="" StringSize="0" Order="6" Attributes="0" />
+        <Variable Name="AxisState" DataType="USINT" Comment="" StringSize="0" Order="7" Attributes="0" />
+        <Variable Name="ErrorID" DataType="UINT" Comment="" StringSize="0" Order="8" Attributes="0" />
+        <Variable Name="ExtraData" DataType="UINT" Comment="" StringSize="0" Order="9" Attributes="0" />
+        <Variable Name="TargetPos" DataType="REAL" Comment="" StringSize="0" Order="10" Attributes="0" />
+        <Variable Name="CommandPos" DataType="REAL" Comment="" StringSize="0" Order="11" Attributes="0" />
+        <Variable Name="TargetVel" DataType="REAL" Comment="" StringSize="0" Order="12" Attributes="0" />
+        <Variable Name="CommandVel" DataType="REAL" Comment="" StringSize="0" Order="13" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="FB_AXIS_REF" Comment="" Attributes="1" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="57">
+        <Variable Name="AxisNo" DataType="USINT" Comment="" StringSize="0" Order="1" Attributes="2" />
+        <Variable Name="ErrorFlag" DataType="BOOL" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="ConstVel" DataType="BOOL" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="AccelFlag" DataType="BOOL" Comment="" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="DecelFlag" DataType="BOOL" Comment="" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="AxisState" DataType="USINT" Comment="" StringSize="0" Order="6" Attributes="0" />
+        <Variable Name="ErrorID" DataType="UINT" Comment="" StringSize="0" Order="7" Attributes="0" />
+        <Variable Name="ExtraData1" DataType="UINT" Comment="" StringSize="0" Order="8" Attributes="0" />
+        <Variable Name="ExtraData2" DataType="UINT" Comment="" StringSize="0" Order="9" Attributes="0" />
+        <Variable Name="ActualPos" DataType="REAL" Comment="" StringSize="0" Order="10" Attributes="0" />
+        <Variable Name="ActualVel" DataType="REAL" Comment="" StringSize="0" Order="11" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="MOTION_DIAG" Comment="" Attributes="1" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="58">
+        <Variable Name="EngineState" DataType="UINT" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="CurrentScanTime" DataType="UINT" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="MaxScanTime" DataType="UINT" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="CurrentEngineInterval" DataType="UINT" Comment="" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="MaxEngineInterval" DataType="UINT" Comment="" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="ExtraData" DataType="UINT" Comment="" StringSize="0" Order="6" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="HSCSTS" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="59">
+        <Variable Name="CountEnable" DataType="BOOL" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="ErrorDetected" DataType="BOOL" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="CountUpFlag" DataType="BOOL" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="CountDwnFlag" DataType="BOOL" Comment="" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="Mode1Done" DataType="BOOL" Comment="" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="OVF" DataType="BOOL" Comment="" StringSize="0" Order="6" Attributes="0" />
+        <Variable Name="UNF" DataType="BOOL" Comment="" StringSize="0" Order="7" Attributes="0" />
+        <Variable Name="CountDir" DataType="BOOL" Comment="" StringSize="0" Order="8" Attributes="0" />
+        <Variable Name="HPReached" DataType="BOOL" Comment="" StringSize="0" Order="9" Attributes="0" />
+        <Variable Name="LPReached" DataType="BOOL" Comment="" StringSize="0" Order="10" Attributes="0" />
+        <Variable Name="OFCauseInter" DataType="BOOL" Comment="" StringSize="0" Order="11" Attributes="0" />
+        <Variable Name="UFCauseInter" DataType="BOOL" Comment="" StringSize="0" Order="12" Attributes="0" />
+        <Variable Name="HPCauseInter" DataType="BOOL" Comment="" StringSize="0" Order="13" Attributes="0" />
+        <Variable Name="LPCauseInter" DataType="BOOL" Comment="" StringSize="0" Order="14" Attributes="0" />
+        <Variable Name="PlsPosition" DataType="UINT" Comment="" StringSize="0" Order="15" Attributes="0" />
+        <Variable Name="ErrorCode" DataType="UINT" Comment="" StringSize="0" Order="16" Attributes="0" />
+        <Variable Name="Accumulator" DataType="DINT" Comment="" StringSize="0" Order="17" Attributes="0" />
+        <Variable Name="HP" DataType="DINT" Comment="" StringSize="0" Order="18" Attributes="0" />
+        <Variable Name="LP" DataType="DINT" Comment="" StringSize="0" Order="19" Attributes="0" />
+        <Variable Name="HPOutput" DataType="UDINT" Comment="" StringSize="0" Order="20" Attributes="0" />
+        <Variable Name="LPOutput" DataType="UDINT" Comment="" StringSize="0" Order="21" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="HSCAPP" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="60">
+        <Variable Name="PlsEnable" DataType="BOOL" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="HscID" DataType="UINT" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="HscMode" DataType="UINT" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="Accumulator" DataType="DINT" Comment="" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="HPSetting" DataType="DINT" Comment="" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="LPSetting" DataType="DINT" Comment="" StringSize="0" Order="6" Attributes="0" />
+        <Variable Name="OFSetting" DataType="DINT" Comment="" StringSize="0" Order="7" Attributes="0" />
+        <Variable Name="UFSetting" DataType="DINT" Comment="" StringSize="0" Order="8" Attributes="0" />
+        <Variable Name="OutputMask" DataType="UDINT" Comment="" StringSize="0" Order="9" Attributes="0" />
+        <Variable Name="HPOutput" DataType="UDINT" Comment="" StringSize="0" Order="10" Attributes="0" />
+        <Variable Name="LPOutput" DataType="UDINT" Comment="" StringSize="0" Order="11" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="IRQUPM" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="61">
+        <Variable Name="AS" DataType="BOOL" Comment="Inicialização automática" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="ENABLED" DataType="BOOL" Comment="Função Ativada" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="PE" DataType="BOOL" Comment="Interrupção do Usuário Pendente" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="LS" DataType="BOOL" Comment="Interrupção do Usuário Perdida" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="EX" DataType="BOOL" Comment="Executando Interrupção do Usuário" StringSize="0" Order="5" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="TOWDATA" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="62">
+        <Variable Name="Enable" DataType="BOOL" Comment="Habilitar (VERDADEIRO:Habilitar; FALSO:Desabilitar)" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="DailyWeekly" DataType="BOOL" Comment="Tipo de temporizador (FALSO:temporizador diário; VERDADEIRO:temporizador semanal)" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="DayOn" DataType="USINT" Comment="Valor do dia da semana ativado (deve estar no conjunto [0...6])" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="HourOn" DataType="USINT" Comment="Valor da hora ativado (deve estar no conjunto [0...23])" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="MinOn" DataType="USINT" Comment="Valor do minuto ativado (deve estar no conjunto [0...59])" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="DayOff" DataType="USINT" Comment="Valor do dia da semana desativado (deve estar no conjunto [0...6])" StringSize="0" Order="6" Attributes="0" />
+        <Variable Name="HourOff" DataType="USINT" Comment="Valor da hora desativado (deve estar no conjunto [0...23])" StringSize="0" Order="7" Attributes="0" />
+        <Variable Name="MinOff" DataType="USINT" Comment="Valor do minuto desativado (deve estar no conjunto [0...59])" StringSize="0" Order="8" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="MMCATNUM" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="63">
+        <Variable Name="CatalogStr" DataType="STRING" Comment="" StringSize="16" Order="1" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="IRQEII" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="4" Order="64">
+        <Variable Name="AS" DataType="BOOL" Comment="Inicialização automática" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="ENABLED" DataType="BOOL" Comment="Função Ativada" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="PE" DataType="BOOL" Comment="Interrupção do Usuário Pendente" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="LS" DataType="BOOL" Comment="Interrupção do Usuário Perdida" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="EX" DataType="BOOL" Comment="Executando Interrupção do Usuário" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="IS" DataType="USINT" Comment="Seleção de entrada" StringSize="0" Order="6" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="RTC" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="65">
+        <Variable Name="Year" DataType="UINT" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="Month" DataType="UINT" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="Day" DataType="UINT" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="Hours" DataType="UINT" Comment="" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="Minutes" DataType="UINT" Comment="" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="Seconds" DataType="UINT" Comment="" StringSize="0" Order="6" Attributes="0" />
+        <Variable Name="DayOfWeek" DataType="UINT" Comment="" StringSize="0" Order="7" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="MMINFO" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="66">
+        <Variable Name="MMCatalog" DataType="MMCATNUM" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="Series" DataType="UINT" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="Revision" DataType="UINT" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="UPValid" DataType="BOOL" Comment="" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="ModeBehavior" DataType="BOOL" Comment="" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="LoadAlways" DataType="BOOL" Comment="" StringSize="0" Order="6" Attributes="0" />
+        <Variable Name="LoadOnError" DataType="BOOL" Comment="" StringSize="0" Order="7" Attributes="0" />
+        <Variable Name="FaultOverride" DataType="BOOL" Comment="" StringSize="0" Order="8" Attributes="0" />
+        <Variable Name="MMPresent" DataType="BOOL" Comment="" StringSize="0" Order="9" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="SYSINFO" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="67">
+        <Variable Name="BootMajRev" DataType="UINT" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="BootMinRev" DataType="UINT" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="OSSeries" DataType="UINT" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="OSMajRev" DataType="UINT" Comment="" StringSize="0" Order="4" Attributes="0" />
+        <Variable Name="OSMinRev" DataType="UINT" Comment="" StringSize="0" Order="5" Attributes="0" />
+        <Variable Name="ModeBehaviour" DataType="BOOL" Comment="" StringSize="0" Order="6" Attributes="0" />
+        <Variable Name="FaultOverride" DataType="BOOL" Comment="" StringSize="0" Order="7" Attributes="0" />
+        <Variable Name="StrtUpProtect" DataType="BOOL" Comment="" StringSize="0" Order="8" Attributes="0" />
+        <Variable Name="MajErrHalted" DataType="BOOL" Comment="" StringSize="0" Order="9" Attributes="0" />
+        <Variable Name="MajErrCode" DataType="UINT" Comment="" StringSize="0" Order="10" Attributes="0" />
+        <Variable Name="MajErrUFR" DataType="BOOL" Comment="" StringSize="0" Order="11" Attributes="0" />
+        <Variable Name="UFRPouNum" DataType="UINT" Comment="" StringSize="0" Order="12" Attributes="0" />
+        <Variable Name="MMLoadAlways" DataType="BOOL" Comment="" StringSize="0" Order="13" Attributes="0" />
+        <Variable Name="MMLoadOnError" DataType="BOOL" Comment="" StringSize="0" Order="14" Attributes="0" />
+        <Variable Name="MMPwdMismatch" DataType="BOOL" Comment="" StringSize="0" Order="15" Attributes="0" />
+        <Variable Name="FreeRunClock" DataType="UINT" Comment="" StringSize="0" Order="16" Attributes="0" />
+        <Variable Name="ForcesInstall" DataType="BOOL" Comment="" StringSize="0" Order="17" Attributes="0" />
+        <Variable Name="EmInFilterMod" DataType="BOOL" Comment="" StringSize="0" Order="18" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="ACLI" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="68">
+        <Variable Name="Channel" DataType="UINT" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="RXBuffer" DataType="BOOL" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="TXBuffer" DataType="BOOL" Comment="" StringSize="0" Order="3" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="SOCKADDR_CFG" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="69">
+        <Variable Name="Port" DataType="UINT" Comment="Número da porta TCP ou UDP" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="IPAddress" DataType="IPADDR" Comment="Endereço IP, por exemplo, especifique 192.168.1.100, [0] = 192, [1] = 168, [2] = 1, [3] = 100" StringSize="0" Order="2" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="SOCK_STATUS" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="70">
+        <Variable Name="ErrorID" DataType="USINT" Comment="Código de erro" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="SubErrorID" DataType="UINT" Comment="Código de suberro" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="StatusBits" DataType="UINT" Comment="Status da execução do soquete de FBs" StringSize="0" Order="3" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="PID_GAINS" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="71">
+        <Variable Name="Kc" DataType="REAL" Comment="" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="Ti" DataType="REAL" Comment="" StringSize="0" Order="2" Attributes="0" />
+        <Variable Name="Td" DataType="REAL" Comment="" StringSize="0" Order="3" Attributes="0" />
+        <Variable Name="FC" DataType="REAL" Comment="" StringSize="0" Order="4" Attributes="0" />
+      </Struct>
+    </DataType>
+    <DataType Name="FF_LF_CON" Comment="" Attributes="0" Access="ReadOnly">
+      <Struct FieldOrder="1" Order="72">
+        <Variable Name="Length" DataType="UINT" Comment="O número de elementos é usado para FIFO/LIFO. O limite máximo é 1.024" StringSize="0" Order="1" Attributes="0" />
+        <Variable Name="Position" DataType="UINT" Comment="Determina o próximo local disponível em FIFO/LIFO para a entrada ou remoção do Src" StringSize="0" Order="2" Attributes="0" />
+      </Struct>
+    </DataType>
+  </DataTypes>
+  <Networks>
+    <Network Name="HSD" SingleTextLine="" LocalNet="true" DistributedNet="false" Comment="" UsedForBinding="true" BindingService="false" AllowWorkbenchCommunications="true">
+      <Parameters />
+      <ConnectionParameters />
+      <ResourceParameters>
+        <Parameter Name="ValidityTime" Format="Long" Default="0" Access="UserDefined" SingleTextLine="Produced Variables validity time." LocalNet="false" DistributedNet="false" />
+      </ResourceParameters>
+      <VariableParameters />
+    </Network>
+    <Network Name="ETCP" SingleTextLine="" LocalNet="false" DistributedNet="true" Comment="" UsedForBinding="true" BindingService="false" AllowWorkbenchCommunications="true">
+      <Parameters />
+      <ConnectionParameters>
+        <Parameter Name="IPAddress" Format="String" Default="" Access="UserDefined" SingleTextLine="IP address or Computer name" LocalNet="false" DistributedNet="true" />
+      </ConnectionParameters>
+      <ResourceParameters>
+        <Parameter Name="TimeOut" Format="Long" Default="10000" Access="UserDefined" SingleTextLine="Maximum allowed time (in ms) to transport a variable" LocalNet="false" DistributedNet="false" />
+      </ResourceParameters>
+      <VariableParameters />
+    </Network>
+    <Network Name="ISARSI" SingleTextLine="" LocalNet="false" DistributedNet="true" Comment="" UsedForBinding="true" BindingService="false" AllowWorkbenchCommunications="true">
+      <Parameters>
+        <Parameter Name="Port" Format="String" Default="COM1" Access="UserDefined" SingleTextLine="Workbench communication port" LocalNet="false" DistributedNet="true" />
+        <Parameter Name="BaudRate" Format="Long" Default="115200" Access="UserDefined" SingleTextLine="Data transfer baud rate" LocalNet="false" DistributedNet="true" />
+        <Parameter Name="Parity" Format="Character" Default="N" Access="UserDefined" SingleTextLine="N: None, E: Even, O: Odd" LocalNet="false" DistributedNet="true" />
+        <Parameter Name="StopBit" Format="Word" Default="1" Access="UserDefined" SingleTextLine="1 or 2 Stop bits" LocalNet="false" DistributedNet="true" />
+        <Parameter Name="HardwareFlowControl" Format="Boolean" Default="FALSE" Access="UserDefined" SingleTextLine="TRUE when using hardware flow control" LocalNet="false" DistributedNet="true" />
+      </Parameters>
+      <ConnectionParameters />
+      <ResourceParameters />
+      <VariableParameters />
+    </Network>
+    <Network Name="CIPNetwork" SingleTextLine="" LocalNet="false" DistributedNet="true" Comment="" UsedForBinding="true" BindingService="false" AllowWorkbenchCommunications="true">
+      <Parameters />
+      <ConnectionParameters>
+        <Parameter Name="CipPath" Format="String" Default="&quot;&quot;" Access="UserDefined" SingleTextLine="" LocalNet="false" DistributedNet="true" />
+      </ConnectionParameters>
+      <ResourceParameters />
+      <VariableParameters />
+    </Network>
+  </Networks>
+  <NetworkInstances>
+    <NetworkInstance NetworkName="CIPNetwork" Name="CIPNetwork1" />
+  </NetworkInstances>
+  <Targets>
+    <Target Name="2080LC5048QWBJ" />
+  </Targets>
+  <Configurations>
+    <Configuration Name="Micro850" ElementGuid="60d9d797-0bae-4d4f-9ce3-1356ab965086" />
+  </Configurations>
+</Project>

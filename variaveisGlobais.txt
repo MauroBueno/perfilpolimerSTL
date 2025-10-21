@@ -1,0 +1,148 @@
+Lista Global de Variáveis para CCW
+Abaixo, listo todas as variáveis necessárias para o projeto no Connected Components Workbench (CCW). As variáveis estão organizadas em:
+
+Variáveis Globais: Declaradas no nível do projeto (Global Variables).
+Variáveis por POU: Declaradas no Editor de Variáveis de cada POU (CTRLROLO1, CTRLROLO2, CTRLROLO3).
+Copie e declare essas variáveis no CCW conforme indicado. As inicializações são baseadas no código ST. Para os POUs, substitua X por 1, 2 ou 3 conforme o POU (ex.: para CTRLROLO1, use _rolo1).
+
+Variáveis Globais (Global Variables no Projeto CCW)
+ModbusBusy : BOOL := FALSE; // Flag para controlar acesso ao canal Modbus
+TorqueMax_rolo1 : UINT := 1000; // Torque máximo para ajuste no PV800 (0.1% unidades)
+SpeedMax_rolo1 : UINT := 6000; // Velocidade máxima para ajuste no PV800 (0.1 Hz unidades)
+SpeedMin_rolo1 : UINT := 0; // Velocidade mínima para ajuste no PV800 (0.1 Hz unidades)
+TorqueMax_rolo2 : UINT := 1000;
+SpeedMax_rolo2 : UINT := 6000;
+SpeedMin_rolo2 : UINT := 0;
+TorqueMax_rolo3 : UINT := 1000;
+SpeedMax_rolo3 : UINT := 6000;
+SpeedMin_rolo3 : UINT := 0;
+Variáveis para CTRLROLO1 (POU)
+LocalCfg_rolo1 : MODBUSLOCPARA := (Channel := 2, TriggerType := 0);
+TargetCfg_rolo1 : MODBUSTARPARA := (Node := 1);
+LocalAddr_rolo1 : MODBUSLOCADDR;
+WriteMsg_rolo1 : MSG_MODBUS;
+ReadMsg_P0009_rolo1 : MSG_MODBUS;
+ReadMsg_P0002_P0003_rolo1 : MSG_MODBUS; // P0002 (Output Frequency) e P0003 (Output Current)
+WriteTrigger_rolo1 : BOOL;
+ReadTrigger_rolo1 : BOOL;
+ReadTimer_rolo1 : TON;
+MaxSpeedSet_rolo1 : UINT;
+MinSpeedSet_rolo1 : UINT;
+MaxTorqueSet_rolo1 : UINT;
+MinTorqueSet_rolo1 : UINT;
+P0498Set_rolo1 : UINT;
+MaxSpeedRead_rolo1 : UINT;
+MinSpeedRead_rolo1 : UINT;
+MaxTorqueRead_rolo1 : UINT;
+MinTorqueRead_rolo1 : UINT;
+P0498Read_rolo1 : UINT;
+TorquePercent_rolo1 : UINT;
+OutputFreq_rolo1 : UINT; // P0002 (Output Frequency)
+TorquePercentScaled_rolo1 : REAL;
+OutputCurrentScaled_rolo1 : REAL; // P0003 (Output Current)
+OutputFreqScaled_rolo1 : REAL;
+TempReal_rolo1 : REAL;
+OutputCurrent_rolo1 : UINT; // P0003 (Output Current)
+WriteStep_rolo1 : INT := 0;
+ReadStep_rolo1 : INT := 0; // Adicionado para controle sequencial de leituras
+EnableDrive_rolo1 : BOOL; // Controle de habilitação do drive (integração com Ladder)
+CommunicationOK_rolo1 : BOOL; // Status de comunicação Modbus
+WriteError_rolo1 : BOOL; // Flag de erro na escrita de parâmetros
+ReadError_rolo1 : BOOL; // Flag de erro na leitura de parâmetros
+ControlTypeSet_rolo1 : UINT := 2; // P0100 = 2 para Vector Sensorless
+ControlTypeRead_rolo1 : UINT;
+VerificationTimer_rolo1 : TON; // Timer para verificações periódicas (ex. 10s)
+VerificationTrigger_rolo1 : BOOL;
+VerificationStep_rolo1 : INT := 0;
+ReadMsg_P0100_rolo1 : MSG_MODBUS; // Para verificar P0100
+ReadMsg_P0134_P0133_rolo1 : MSG_MODBUS; // P0134 (Max Speed) e P0133 (Min Speed)
+ReadMsg_P0169_P0170_rolo1 : MSG_MODBUS; // P0169 (Max Torque) e P0170 (Min Torque)
+Variáveis para CTRLROLO2 (POU)
+LocalCfg_rolo2 : MODBUSLOCPARA := (Channel := 2, TriggerType := 0);
+TargetCfg_rolo2 : MODBUSTARPARA := (Node := 2);
+LocalAddr_rolo2 : MODBUSLOCADDR;
+WriteMsg_rolo2 : MSG_MODBUS;
+ReadMsg_P0009_rolo2 : MSG_MODBUS;
+ReadMsg_P0002_P0003_rolo2 : MSG_MODBUS; // P0002 (Output Frequency) e P0003 (Output Current)
+WriteTrigger_rolo2 : BOOL;
+ReadTrigger_rolo2 : BOOL;
+ReadTimer_rolo2 : TON;
+MaxSpeedSet_rolo2 : UINT;
+MinSpeedSet_rolo2 : UINT;
+MaxTorqueSet_rolo2 : UINT;
+MinTorqueSet_rolo2 : UINT;
+P0498Set_rolo2 : UINT;
+MaxSpeedRead_rolo2 : UINT;
+MinSpeedRead_rolo2 : UINT;
+MaxTorqueRead_rolo2 : UINT;
+MinTorqueRead_rolo2 : UINT;
+P0498Read_rolo2 : UINT;
+TorquePercent_rolo2 : UINT;
+OutputFreq_rolo2 : UINT; // P0002 (Output Frequency)
+TorquePercentScaled_rolo2 : REAL;
+OutputCurrentScaled_rolo2 : REAL; // P0003 (Output Current)
+OutputFreqScaled_rolo2 : REAL;
+TempReal_rolo2 : REAL;
+OutputCurrent_rolo2 : UINT; // P0003 (Output Current)
+WriteStep_rolo2 : INT := 0;
+ReadStep_rolo2 : INT := 0; // Adicionado para controle sequencial de leituras
+EnableDrive_rolo2 : BOOL; // Controle de habilitação do drive (integração com Ladder)
+CommunicationOK_rolo2 : BOOL; // Status de comunicação Modbus
+WriteError_rolo2 : BOOL; // Flag de erro na escrita de parâmetros
+ReadError_rolo2 : BOOL; // Flag de erro na leitura de parâmetros
+ControlTypeSet_rolo2 : UINT := 2; // P0100 = 2 para Vector Sensorless
+ControlTypeRead_rolo2 : UINT;
+VerificationTimer_rolo2 : TON; // Timer para verificações periódicas (ex. 10s)
+VerificationTrigger_rolo2 : BOOL;
+VerificationStep_rolo2 : INT := 0;
+ReadMsg_P0100_rolo2 : MSG_MODBUS; // Para verificar P0100
+ReadMsg_P0134_P0133_rolo2 : MSG_MODBUS; // P0134 (Max Speed) e P0133 (Min Speed)
+ReadMsg_P0169_P0170_rolo2 : MSG_MODBUS; // P0169 (Max Torque) e P0170 (Min Torque)
+Variáveis para CTRLROLO3 (POU)
+LocalCfg_rolo3 : MODBUSLOCPARA := (Channel := 2, TriggerType := 0);
+TargetCfg_rolo3 : MODBUSTARPARA := (Node := 3);
+LocalAddr_rolo3 : MODBUSLOCADDR;
+WriteMsg_rolo3 : MSG_MODBUS;
+ReadMsg_P0009_rolo3 : MSG_MODBUS;
+ReadMsg_P0002_P0003_rolo3 : MSG_MODBUS; // P0002 (Output Frequency) e P0003 (Output Current)
+WriteTrigger_rolo3 : BOOL;
+ReadTrigger_rolo3 : BOOL;
+ReadTimer_rolo3 : TON;
+MaxSpeedSet_rolo3 : UINT;
+MinSpeedSet_rolo3 : UINT;
+MaxTorqueSet_rolo3 : UINT;
+MinTorqueSet_rolo3 : UINT;
+P0498Set_rolo3 : UINT;
+MaxSpeedRead_rolo3 : UINT;
+MinSpeedRead_rolo3 : UINT;
+MaxTorqueRead_rolo3 : UINT;
+MinTorqueRead_rolo3 : UINT;
+P0498Read_rolo3 : UINT;
+TorquePercent_rolo3 : UINT;
+OutputFreq_rolo3 : UINT; // P0002 (Output Frequency)
+TorquePercentScaled_rolo3 : REAL;
+OutputCurrentScaled_rolo3 : REAL; // P0003 (Output Current)
+OutputFreqScaled_rolo3 : REAL;
+TempReal_rolo3 : REAL;
+OutputCurrent_rolo3 : UINT; // P0003 (Output Current)
+WriteStep_rolo3 : INT := 0;
+ReadStep_rolo3 : INT := 0; // Adicionado para controle sequencial de leituras
+EnableDrive_rolo3 : BOOL; // Controle de habilitação do drive (integração com Ladder)
+CommunicationOK_rolo3 : BOOL; // Status de comunicação Modbus
+WriteError_rolo3 : BOOL; // Flag de erro na escrita de parâmetros
+ReadError_rolo3 : BOOL; // Flag de erro na leitura de parâmetros
+ControlTypeSet_rolo3 : UINT := 2; // P0100 = 2 para Vector Sensorless
+ControlTypeRead_rolo3 : UINT;
+VerificationTimer_rolo3 : TON; // Timer para verificações periódicas (ex. 10s)
+VerificationTrigger_rolo3 : BOOL;
+VerificationStep_rolo3 : INT := 0;
+ReadMsg_P0100_rolo3 : MSG_MODBUS; // Para verificar P0100
+ReadMsg_P0134_P0133_rolo3 : MSG_MODBUS; // P0134 (Max Speed) e P0133 (Min Speed)
+ReadMsg_P0169_P0170_rolo3 : MSG_MODBUS; // P0169 (Max Torque) e P0170 (Min Torque)
+Notas:
+Inicializações: Aplicadas apenas onde especificadas (ex.: := 0 para INTs, structs para MODBUSLOCPARA/MODBUSTARPARA).
+Tipos de Dados: Certifique-se de que os tipos (ex.: MODBUSLOCPARA, MSG_MODBUS) estejam disponíveis no CCW (geralmente pré-definidos para Modbus).
+Acesso Global: ModbusBusy deve ser acessível de todos os POUs (declare como global no projeto).
+Timers: Os timers são declarados como TON, mas os intervalos (1s, 1.2s, 1.4s para reads, 10s para verification) estão no código ST.
+Variáveis Globais para PV800: TorqueMax, SpeedMax, SpeedMin podem ser ajustadas na tela do HMI e são usadas para atualizar os set points.
+Se houver variáveis adicionais ou ajustes no futuro, atualize essa lista. Copie o código ST atualizado dos arquivos .st para os POUs no CCW após declarar as variáveis.
