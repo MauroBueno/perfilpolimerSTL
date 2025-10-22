@@ -16,6 +16,36 @@ SpeedMin_rolo2 : UINT := 0;
 TorqueMax_rolo3 : UINT := 1000;
 SpeedMax_rolo3 : UINT := 6000;
 SpeedMin_rolo3 : UINT := 0;
+TorqueMaxOld_rolo1 : UINT := 1000; // Valor antigo para detecção de mudança
+SpeedMaxOld_rolo1 : UINT := 6000;
+SpeedMinOld_rolo1 : UINT := 0;
+WriteNeeded_rolo1 : BOOL := FALSE; // Flag para necessidade de escrita
+TorqueMaxOld_rolo2 : UINT := 1000;
+SpeedMaxOld_rolo2 : UINT := 6000;
+SpeedMinOld_rolo2 : UINT := 0;
+WriteNeeded_rolo2 : BOOL := FALSE;
+TorqueMaxOld_rolo3 : UINT := 1000;
+SpeedMaxOld_rolo3 : UINT := 6000;
+SpeedMinOld_rolo3 : UINT := 0;
+WriteNeeded_rolo3 : BOOL := FALSE;
+MAX_RETRIES : INT := 3; // Maximum retry attempts for failed communications
+WriteRetryCount_rolo1 : INT := 0; // Retry counter for write operations
+ReadRetryCount_rolo1 : INT := 0; // Retry counter for read operations
+VerificationRetryCount_rolo1 : INT := 0; // Retry counter for verification operations
+WriteRetryCount_rolo2 : INT := 0;
+ReadRetryCount_rolo2 : INT := 0;
+VerificationRetryCount_rolo2 : INT := 0;
+WriteRetryCount_rolo3 : INT := 0;
+ReadRetryCount_rolo3 : INT := 0;
+VerificationRetryCount_rolo3 : INT := 0;
+SPEED_MAX_LIMIT : REAL := 100.0; // Maximum speed limit in Hz
+SPEED_MIN_LIMIT : REAL := 0.0; // Minimum speed limit in Hz
+TORQUE_MAX_LIMIT : REAL := 200.0; // Maximum torque limit in %
+TORQUE_MIN_LIMIT : REAL := 0.0; // Minimum torque limit in %
+ERROR_RECOVERY_TIME : TIME := T#30s; // Time after which to clear error flags on successful communication
+ErrorRecoveryTimer_rolo1 : TON; // Timer for clearing error flags after successful communication
+ErrorRecoveryTimer_rolo2 : TON;
+ErrorRecoveryTimer_rolo3 : TON;
 Variáveis para CTRLROLO1 (POU)
 LocalCfg_rolo1 : MODBUSLOCPARA := (Channel := 2, TriggerType := 0);
 TargetCfg_rolo1 : MODBUSTARPARA := (Node := 1);
@@ -143,6 +173,8 @@ Notas:
 Inicializações: Aplicadas apenas onde especificadas (ex.: := 0 para INTs, structs para MODBUSLOCPARA/MODBUSTARPARA).
 Tipos de Dados: Certifique-se de que os tipos (ex.: MODBUSLOCPARA, MSG_MODBUS) estejam disponíveis no CCW (geralmente pré-definidos para Modbus).
 Acesso Global: ModbusBusy deve ser acessível de todos os POUs (declare como global no projeto).
-Timers: Os timers são declarados como TON, mas os intervalos (1s, 1.2s, 1.4s para reads, 10s para verification) estão no código ST.
-Variáveis Globais para PV800: TorqueMax, SpeedMax, SpeedMin podem ser ajustadas na tela do HMI e são usadas para atualizar os set points.
+Timers: The timers are declared as TON, but the intervals (1s for reads, 10s for verification) are in the code ST.
+Variáveis Globais para PV800: TorqueMax, SpeedMax, SpeedMin podem ser ajustadas na tela do HMI e são usadas para atualizar os set points automaticamente quando mudam e são diferentes dos valores no drive. Valores são validados e limitados antes da conversão para unidades do inversor.
+Lógica de Escrita: Apenas escreve parâmetros quando os valores do HMI mudam e são diferentes dos valores atuais no CFW500, evitando escritas desnecessárias.
 Se houver variáveis adicionais ou ajustes no futuro, atualize essa lista. Copie o código ST atualizado dos arquivos .st para os POUs no CCW após declarar as variáveis.
+Para documentação detalhada dos registros Modbus CFW500, consulte o arquivo CFW500_Modbus_Mapping.md.

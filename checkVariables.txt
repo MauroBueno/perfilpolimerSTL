@@ -50,6 +50,9 @@ xx VerificationStep_rolo1 : INT := 0;
 xx ReadMsg_P0100_rolo1 : MSG_MODBUS; // Para verificar P0100
 xx ReadMsg_P0134_P0133_rolo1 : MSG_MODBUS; // P0134 (Max Speed) e P0133 (Min Speed)
 xx ReadMsg_P0169_P0170_rolo1 : MSG_MODBUS; // P0169 (Max Torque) e P0170 (Min Torque)
+xx WriteRetryCount_rolo1 : INT := 0; // Retry counter for write operations
+xx ReadRetryCount_rolo1 : INT := 0; // Retry counter for read operations
+xx VerificationRetryCount_rolo1 : INT := 0; // Retry counter for verification operations
 ******** Variáveis para CTRLROLO2 (POU)
 x LocalCfg_rolo2 : MODBUSLOCPARA := (Channel := 2, TriggerType := 0);
 x TargetCfg_rolo2 : MODBUSTARPARA := (Node := 2);
@@ -91,6 +94,9 @@ xx VerificationStep_rolo2 : INT := 0;
 xx ReadMsg_P0100_rolo2 : MSG_MODBUS; // Para verificar P0100
 xx ReadMsg_P0134_P0133_rolo2 : MSG_MODBUS; // P0134 (Max Speed) e P0133 (Min Speed)
 xx ReadMsg_P0169_P0170_rolo2 : MSG_MODBUS; // P0169 (Max Torque) e P0170 (Min Torque)
+xx WriteRetryCount_rolo2 : INT := 0; // Retry counter for write operations
+xx ReadRetryCount_rolo2 : INT := 0; // Retry counter for read operations
+xx VerificationRetryCount_rolo2 : INT := 0; // Retry counter for verification operations
 ******** Variáveis para CTRLROLO3 (POU)
 x LocalCfg_rolo3 : MODBUSLOCPARA := (Channel := 2, TriggerType := 0);
 x TargetCfg_rolo3 : MODBUSTARPARA := (Node := 3);
@@ -132,3 +138,14 @@ x VerificationStep_rolo3 : INT := 0;
 x ReadMsg_P0100_rolo3 : MSG_MODBUS; // Para verificar P0100
 x ReadMsg_P0134_P0133_rolo3 : MSG_MODBUS; // P0134 (Max Speed) e P0133 (Min Speed)
 x ReadMsg_P0169_P0170_rolo3 : MSG_MODBUS; // P0169 (Max Torque) e P0170 (Min Torque)
+x WriteRetryCount_rolo3 : INT := 0; // Retry counter for write operations
+x ReadRetryCount_rolo3 : INT := 0; // Retry counter for read operations
+x VerificationRetryCount_rolo3 : INT := 0; // Retry counter for verification operations
+x SPEED_MAX_LIMIT : REAL := 100.0; // Maximum speed limit in Hz
+x SPEED_MIN_LIMIT : REAL := 0.0; // Minimum speed limit in Hz
+x TORQUE_MAX_LIMIT : REAL := 200.0; // Maximum torque limit in %
+x TORQUE_MIN_LIMIT : REAL := 0.0; // Minimum torque limit in %
+x ERROR_RECOVERY_TIME : TIME := T#30s; // Time after which to clear error flags on successful communication
+x ErrorRecoveryTimer_rolo1 : TON; // Timer for clearing error flags after successful communication
+x ErrorRecoveryTimer_rolo2 : TON;
+x ErrorRecoveryTimer_rolo3 : TON;

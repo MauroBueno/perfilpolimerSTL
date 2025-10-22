@@ -1,11 +1,12 @@
 (* ST Program for CFW500 Parameter Control and Monitoring *)
+(* For detailed Modbus register mapping and parameter documentation, see CFW500_Modbus_Mapping.md *)
 (* Assumptions:
 - Single inverter at Node = 2.
 - Registers are direct: Pxxxx at holding register xxxx.
 - Scaling: Values are integers; for decimals (e.g., P0009 in 0.1%), divide by 10.0 for REAL display.
 - P0498 assumed as UINT (0/1 for disable/enable); adjust if different.
 - Writes triggered by WriteTrigger BOOL (e.g., from HMI or logic).
-- Reads every 1.2 seconds for P0009, P0002, P0003 (torque, output frequency, output current).
+- Reads every 1 second for P0009, P0002, P0003 (torque, output frequency, output current).
 - Verification every 10 seconds for critical parameters (P0100, speeds, torques) to force Vector Sensorless and limits.
 - Use separate MSG_MODBUS instances to avoid conflicts.
 - Add error handling (e.g., check .Q and .Error) as needed.
@@ -19,14 +20,53 @@ IF VerificationTimer_rolo2.Q THEN
     VerificationTimer_rolo2(IN := FALSE); // Reset to restart timer
 END_IF;
 
+// Periodic Read Timer (every 1s for monitoring parameters)
+ReadTimer_rolo2(IN := TRUE, PT := T#1s);
+IF ReadTimer_rolo2.Q THEN
+    ReadStep_rolo2 := 1;  // Start read sequence
+    ReadTimer_rolo2(IN := FALSE); // Reset to restart timer
+END_IF;
+
+// Detect changes in HMI values and compare with drive values to set write flag
+IF TorqueMax_rolo2 <> TorqueMaxOld_rolo2 OR SpeedMax_rolo2 <> SpeedMaxOld_rolo2 OR SpeedMin_rolo2 <> SpeedMinOld_rolo2 THEN
+    TorqueMaxOld_rolo2 := TorqueMax_rolo2;
+    SpeedMaxOld_rolo2 := SpeedMax_rolo2;
+    SpeedMinOld_rolo2 := SpeedMin_rolo2;
+    // Check if different from drive values
+    IF UINT(TorqueMax_rolo2 * 10) <> MaxTorqueRead_rolo2 OR UINT(SpeedMax_rolo2 * 100) <> MaxSpeedRead_rolo2 OR UINT(SpeedMin_rolo2 * 100) <> MinSpeedRead_rolo2 THEN
+        WriteNeeded_rolo2 := TRUE;
+    END_IF;
+END_IF;
+
 // Update set values from PV800 globals
+// Parameter validation and bounds checking before scaling
+// Ensures safe operation by clamping HMI inputs to valid ranges
+IF SpeedMax_rolo2 > SPEED_MAX_LIMIT THEN
+    SpeedMax_rolo2 := SPEED_MAX_LIMIT;
+ELSIF SpeedMax_rolo2 < SPEED_MIN_LIMIT THEN
+    SpeedMax_rolo2 := SPEED_MIN_LIMIT;
+END_IF;
+
+IF SpeedMin_rolo2 < SPEED_MIN_LIMIT THEN
+    SpeedMin_rolo2 := SPEED_MIN_LIMIT;
+ELSIF SpeedMin_rolo2 > SpeedMax_rolo2 THEN
+    SpeedMin_rolo2 := SpeedMax_rolo2; // Ensure min <= max
+END_IF;
+
+IF TorqueMax_rolo2 > TORQUE_MAX_LIMIT THEN
+    TorqueMax_rolo2 := TORQUE_MAX_LIMIT;
+ELSIF TorqueMax_rolo2 < TORQUE_MIN_LIMIT THEN
+    TorqueMax_rolo2 := TORQUE_MIN_LIMIT;
+END_IF;
+
+// Convert validated values to inverter units
 MaxSpeedSet_rolo2 := UINT(SpeedMax_rolo2 * 100); // Convert Hz to 0.01 Hz units
 MinSpeedSet_rolo2 := UINT(SpeedMin_rolo2 * 100);
 MaxTorqueSet_rolo2 := UINT(TorqueMax_rolo2 * 10); // Convert % to 0.1% units
 MinTorqueSet_rolo2 := UINT(0 * 10); // Assuming MinTorque is 0
 
-// Write Logic (triggered by WriteTrigger; writes all params sequentially)
-IF WriteTrigger_rolo2 THEN
+// Write Logic (triggered by WriteNeeded or WriteTrigger; writes all params sequentially)
+IF WriteNeeded_rolo2 OR WriteTrigger_rolo2 THEN
     CASE WriteStep_rolo2 OF
             0:
             LocalAddr_rolo2[1] := MaxSpeedSet_rolo2;
@@ -37,6 +77,14 @@ IF WriteTrigger_rolo2 THEN
         IF WriteMsg_rolo2.Q THEN
                 WriteStep_rolo2 := 1;
                 MaxSpeedRead_rolo2 := LocalAddr_rolo2[1];
+                WriteRetryCount_rolo2 := 0; // Reset retry counter on success
+        ELSIF WriteRetryCount_rolo2 < MAX_RETRIES THEN
+                WriteRetryCount_rolo2 := WriteRetryCount_rolo2 + 1;
+                // Retry the same operation
+        ELSE
+                WriteStep_rolo2 := 1; // Advance on max retries reached
+                WriteError_rolo2 := TRUE;
+                WriteRetryCount_rolo2 := 0; // Reset for next operation
         END_IF;
             1:
             LocalAddr_rolo2[1] := MinSpeedSet_rolo2;
@@ -47,6 +95,14 @@ IF WriteTrigger_rolo2 THEN
         IF WriteMsg_rolo2.Q THEN
                 WriteStep_rolo2 := 2;
                 MinSpeedRead_rolo2 := LocalAddr_rolo2[1];
+                WriteRetryCount_rolo2 := 0; // Reset retry counter on success
+        ELSIF WriteRetryCount_rolo2 < MAX_RETRIES THEN
+                WriteRetryCount_rolo2 := WriteRetryCount_rolo2 + 1;
+                // Retry the same operation
+        ELSE
+                WriteStep_rolo2 := 2; // Advance on max retries reached
+                WriteError_rolo2 := TRUE;
+                WriteRetryCount_rolo2 := 0; // Reset for next operation
         END_IF;
             2:
             LocalAddr_rolo2[1] := MaxTorqueSet_rolo2;
@@ -57,6 +113,14 @@ IF WriteTrigger_rolo2 THEN
         IF WriteMsg_rolo2.Q THEN
                 WriteStep_rolo2 := 3;
                 MaxTorqueRead_rolo2 := LocalAddr_rolo2[1];
+                WriteRetryCount_rolo2 := 0; // Reset retry counter on success
+        ELSIF WriteRetryCount_rolo2 < MAX_RETRIES THEN
+                WriteRetryCount_rolo2 := WriteRetryCount_rolo2 + 1;
+                // Retry the same operation
+        ELSE
+                WriteStep_rolo2 := 3; // Advance on max retries reached
+                WriteError_rolo2 := TRUE;
+                WriteRetryCount_rolo2 := 0; // Reset for next operation
         END_IF;
             3:
             LocalAddr_rolo2[1] := MinTorqueSet_rolo2;
@@ -67,6 +131,14 @@ IF WriteTrigger_rolo2 THEN
         IF WriteMsg_rolo2.Q THEN
                 WriteStep_rolo2 := 4;
                 MinTorqueRead_rolo2 := LocalAddr_rolo2[1];
+                WriteRetryCount_rolo2 := 0; // Reset retry counter on success
+        ELSIF WriteRetryCount_rolo2 < MAX_RETRIES THEN
+                WriteRetryCount_rolo2 := WriteRetryCount_rolo2 + 1;
+                // Retry the same operation
+        ELSE
+                WriteStep_rolo2 := 4; // Advance on max retries reached
+                WriteError_rolo2 := TRUE;
+                WriteRetryCount_rolo2 := 0; // Reset for next operation
         END_IF;
             4:
             LocalAddr_rolo2[1] := P0498Set_rolo2;
@@ -78,6 +150,17 @@ IF WriteTrigger_rolo2 THEN
                 WriteStep_rolo2 := 0;
                 P0498Read_rolo2 := LocalAddr_rolo2[1];
                 WriteTrigger_rolo2 := FALSE;
+                WriteNeeded_rolo2 := FALSE;
+                WriteRetryCount_rolo2 := 0; // Reset retry counter on success
+        ELSIF WriteRetryCount_rolo2 < MAX_RETRIES THEN
+                WriteRetryCount_rolo2 := WriteRetryCount_rolo2 + 1;
+                // Retry the same operation
+        ELSE
+                WriteStep_rolo2 := 0; // Reset on max retries reached
+                WriteTrigger_rolo2 := FALSE;
+                WriteNeeded_rolo2 := FALSE;
+                WriteError_rolo2 := TRUE;
+                WriteRetryCount_rolo2 := 0; // Reset for next operation
         END_IF;
     END_CASE;
 
@@ -85,9 +168,33 @@ IF WriteTrigger_rolo2 THEN
 IF WriteMsg_rolo2.Q THEN
     WriteError_rolo2 := FALSE;
     CommunicationOK_rolo2 := TRUE;
-ELSE
+ELSIF WriteRetryCount_rolo2 >= MAX_RETRIES THEN
     WriteError_rolo2 := TRUE;
     CommunicationOK_rolo2 := FALSE;
+END_IF;
+
+// Reset read error on successful read operations
+IF ReadMsg_P0009_rolo2.Q OR ReadMsg_P0002_P0003_rolo2.Q THEN
+    ReadError_rolo2 := FALSE;
+    CommunicationOK_rolo2 := TRUE;
+END_IF;
+
+// Reset verification errors on successful verification operations
+IF ReadMsg_P0100_rolo2.Q OR ReadMsg_P0134_P0133_rolo2.Q OR ReadMsg_P0169_P0170_rolo2.Q THEN
+    // Verification errors are handled per operation, but we can clear general communication status
+    CommunicationOK_rolo2 := TRUE;
+END_IF;
+
+// Error recovery mechanism - clear error flags after sustained successful communication
+IF CommunicationOK_rolo2 THEN
+    ErrorRecoveryTimer_rolo2(IN := TRUE, PT := ERROR_RECOVERY_TIME);
+    IF ErrorRecoveryTimer_rolo2.Q THEN
+        WriteError_rolo2 := FALSE;
+        ReadError_rolo2 := FALSE;
+        ErrorRecoveryTimer_rolo2(IN := FALSE); // Reset timer
+    END_IF;
+ELSE
+    ErrorRecoveryTimer_rolo2(IN := FALSE); // Reset timer on communication failure
 END_IF;
 
 // Read Logic (sequential to avoid overloading Modbus channel)
@@ -106,6 +213,16 @@ CASE ReadStep_rolo2 OF
             TorquePercentScaled_rolo2 := TempReal_rolo2 / 10.0;
             ReadStep_rolo2 := 2;
             ModbusBusy := FALSE;
+            ReadRetryCount_rolo2 := 0; // Reset retry counter on success
+        ELSIF ReadRetryCount_rolo2 < MAX_RETRIES THEN
+            ReadRetryCount_rolo2 := ReadRetryCount_rolo2 + 1;
+            ModbusBusy := FALSE; // Release bus for retry
+            // Will retry on next cycle
+        ELSE
+            ReadStep_rolo2 := 2; // Advance on max retries
+            ModbusBusy := FALSE;
+            ReadError_rolo2 := TRUE;
+            ReadRetryCount_rolo2 := 0; // Reset for next operation
         END_IF;
     2:  // Read P0002 and P0003
         IF NOT ModbusBusy THEN
@@ -125,6 +242,17 @@ CASE ReadStep_rolo2 OF
             ReadStep_rolo2 := 0;  // Reset for next cycle
             ReadTrigger_rolo2 := FALSE;
             ModbusBusy := FALSE;
+            ReadRetryCount_rolo2 := 0; // Reset retry counter on success
+        ELSIF ReadRetryCount_rolo2 < MAX_RETRIES THEN
+            ReadRetryCount_rolo2 := ReadRetryCount_rolo2 + 1;
+            ModbusBusy := FALSE; // Release bus for retry
+            // Will retry on next cycle
+        ELSE
+            ReadStep_rolo2 := 0; // Reset on max retries
+            ReadTrigger_rolo2 := FALSE;
+            ModbusBusy := FALSE;
+            ReadError_rolo2 := TRUE;
+            ReadRetryCount_rolo2 := 0; // Reset for next operation
         END_IF;
     END_CASE;
 
@@ -149,11 +277,25 @@ CASE VerificationStep_rolo2 OF
                 WriteMsg_rolo2(IN := TRUE, LocalCfg := LocalCfg_rolo2, TargetCfg := TargetCfg_rolo2, LocalAddr := LocalAddr_rolo2);
                 IF WriteMsg_rolo2.Q THEN
                     VerificationStep_rolo2 := 2;
+                    VerificationRetryCount_rolo2 := 0; // Reset on success
+                ELSIF VerificationRetryCount_rolo2 < MAX_RETRIES THEN
+                    VerificationRetryCount_rolo2 := VerificationRetryCount_rolo2 + 1;
+                ELSE
+                    VerificationStep_rolo2 := 2; // Advance on max retries
+                    VerificationRetryCount_rolo2 := 0;
                 END_IF;
             ELSE
                 VerificationStep_rolo2 := 2;
+                VerificationRetryCount_rolo2 := 0; // Reset on success
             END_IF;
             ModbusBusy := FALSE;
+        ELSIF VerificationRetryCount_rolo2 < MAX_RETRIES THEN
+            VerificationRetryCount_rolo2 := VerificationRetryCount_rolo2 + 1;
+            ModbusBusy := FALSE; // Release bus for retry
+        ELSE
+            VerificationStep_rolo2 := 2; // Advance on max retries
+            ModbusBusy := FALSE;
+            VerificationRetryCount_rolo2 := 0;
         END_IF;
     2:  // Read P0134 and P0133 (Max/Min Speed)
         IF NOT ModbusBusy THEN
@@ -176,11 +318,25 @@ CASE VerificationStep_rolo2 OF
                 WriteMsg_rolo2(IN := TRUE, LocalCfg := LocalCfg_rolo2, TargetCfg := TargetCfg_rolo2, LocalAddr := LocalAddr_rolo2);
                 IF WriteMsg_rolo2.Q THEN
                     VerificationStep_rolo2 := 3;
+                    VerificationRetryCount_rolo2 := 0; // Reset on success
+                ELSIF VerificationRetryCount_rolo2 < MAX_RETRIES THEN
+                    VerificationRetryCount_rolo2 := VerificationRetryCount_rolo2 + 1;
+                ELSE
+                    VerificationStep_rolo2 := 3; // Advance on max retries
+                    VerificationRetryCount_rolo2 := 0;
                 END_IF;
             ELSE
                 VerificationStep_rolo2 := 3;
+                VerificationRetryCount_rolo2 := 0; // Reset on success
             END_IF;
             ModbusBusy := FALSE;
+        ELSIF VerificationRetryCount_rolo2 < MAX_RETRIES THEN
+            VerificationRetryCount_rolo2 := VerificationRetryCount_rolo2 + 1;
+            ModbusBusy := FALSE; // Release bus for retry
+        ELSE
+            VerificationStep_rolo2 := 3; // Advance on max retries
+            ModbusBusy := FALSE;
+            VerificationRetryCount_rolo2 := 0;
         END_IF;
     3:  // Read P0169 and P0170 (Max/Min Torque)
         IF NOT ModbusBusy THEN
@@ -204,11 +360,27 @@ CASE VerificationStep_rolo2 OF
                 IF WriteMsg_rolo2.Q THEN
                     VerificationStep_rolo2 := 0; // Reset
                     VerificationTrigger_rolo2 := FALSE;
+                    VerificationRetryCount_rolo2 := 0; // Reset on success
+                ELSIF VerificationRetryCount_rolo2 < MAX_RETRIES THEN
+                    VerificationRetryCount_rolo2 := VerificationRetryCount_rolo2 + 1;
+                ELSE
+                    VerificationStep_rolo2 := 0; // Reset on max retries
+                    VerificationTrigger_rolo2 := FALSE;
+                    VerificationRetryCount_rolo2 := 0;
                 END_IF;
             ELSE
                 VerificationStep_rolo2 := 0; // Reset
                 VerificationTrigger_rolo2 := FALSE;
+                VerificationRetryCount_rolo2 := 0; // Reset on success
             END_IF;
             ModbusBusy := FALSE;
+        ELSIF VerificationRetryCount_rolo2 < MAX_RETRIES THEN
+            VerificationRetryCount_rolo2 := VerificationRetryCount_rolo2 + 1;
+            ModbusBusy := FALSE; // Release bus for retry
+        ELSE
+            VerificationStep_rolo2 := 0; // Reset on max retries
+            VerificationTrigger_rolo2 := FALSE;
+            ModbusBusy := FALSE;
+            VerificationRetryCount_rolo2 := 0;
         END_IF;
     END_CASE;
