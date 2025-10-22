@@ -239,6 +239,29 @@ CASE ReadStep_rolo3 OF
             OutputFreqScaled_rolo3 := TempReal_rolo3 / 10.0;
             TempReal_rolo3 := UINT_TO_REAL(OutputCurrent_rolo3);
             OutputCurrentScaled_rolo3 := TempReal_rolo3 / 10.0;
+            
+            // Speed vs Torque monitoring logic
+            // Calculate expected minimum speed based on torque and ratio
+            // If torque is high but speed is low, it may indicate motor stall or insufficient power
+            IF TorquePercentScaled_rolo3 > 20.0 AND EnableDrive_rolo3 THEN  // Only monitor when drive is enabled and torque > 20%
+                TempReal_rolo3 := TorquePercentScaled_rolo3 * SPEED_TORQUE_RATIO;  // Expected min speed = torque% * ratio
+                IF OutputFreqScaled_rolo3 < TempReal_rolo3 THEN
+                    // Speed is too low for the torque level - start alarm timer
+                    SpeedTorqueAlarmTimer_rolo3(IN := TRUE, PT := SPEED_TORQUE_ALARM_DELAY);
+                    IF SpeedTorqueAlarmTimer_rolo3.Q THEN
+                        SpeedTorqueAlarm_rolo3 := TRUE;
+                    END_IF;
+                ELSE
+                    // Speed is adequate - reset alarm
+                    SpeedTorqueAlarm_rolo3 := FALSE;
+                    SpeedTorqueAlarmTimer_rolo3(IN := FALSE);
+                END_IF;
+            ELSE
+                // Reset alarm when drive disabled or low torque
+                SpeedTorqueAlarm_rolo3 := FALSE;
+                SpeedTorqueAlarmTimer_rolo3(IN := FALSE);
+            END_IF;
+            
             ReadStep_rolo3 := 0;  // Reset for next cycle
             ReadTrigger_rolo3 := FALSE;
             ModbusBusy := FALSE;

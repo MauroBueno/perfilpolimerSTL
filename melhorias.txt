@@ -68,6 +68,26 @@ Este documento descreve as cinco melhorias implementadas no sistema de controle 
 - Facilita manutenção e troubleshooting
 - Apoio para novos desenvolvedores
 
+## 6. Monitoramento Velocidade vs Torque (Nova Funcionalidade)
+**Problema Identificado**: Sistema não detectava quando torque alto resultava em velocidade baixa, indicando possíveis problemas mecânicos.
+
+**Solução Implementada**:
+- Monitoramento inteligente velocidade vs torque
+- Alarme quando velocidade < torque% × 0.5 (configurável)
+- Atraso de 5 segundos para evitar alarmes falsos
+- Reset automático quando condição normaliza
+
+**Benefícios**:
+- Detecção precoce de problemas mecânicos
+- Identificação de chapas presas ou torque insuficiente
+- Prevenção de danos ao equipamento
+- Melhor controle de qualidade do processo
+
+**Lógica de Detecção**:
+- Só monitora quando torque > 20% E drive habilitado
+- Velocidade esperada = torque% × SPEED_TORQUE_RATIO
+- Alarme se velocidade atual < velocidade esperada
+
 ## Impacto Geral do Sistema
 
 ### Antes das Melhorias:
@@ -88,18 +108,22 @@ Este documento descreve as cinco melhorias implementadas no sistema de controle 
 - `SPEED_MIN_LIMIT = 0.0` - Limite mínimo de velocidade (Hz)
 - `TORQUE_MAX_LIMIT = 200.0` - Limite máximo de torque (%)
 - `TORQUE_MIN_LIMIT = 0.0` - Limite mínimo de torque (%)
+- `SPEED_TORQUE_RATIO = 0.5` - Relação velocidade/torque para alarme
+- `SPEED_TORQUE_ALARM_DELAY = T#5s` - Atraso para ativação do alarme
 - `ERROR_RECOVERY_TIME = T#30s` - Tempo para limpeza automática de erros
 
-## Arquivos Modificados
-- `ctrlRolo1.st`, `ctrlRolo2.st`, `ctrlRolo3.st` - Lógica de controle
+## Arquivos Modificados/Criados
+- `ctrlRolo1.st`, `ctrlRolo2.st`, `ctrlRolo3.st` - Lógica de controle aprimorada
 - `variaveisGlobais.txt` - Variáveis globais e constantes
 - `checkVariables.txt` - Lista de verificação de variáveis
-- `CFW500_Modbus_Mapping.md` - Novo arquivo de documentação
+- `CFW500_Modbus_Mapping.md` - Documentação técnica completa
+- `lista_tags_hmi.txt` - Lista de TAGS para interface HMI
+- `alarme_velocidade_torque.md` - Documentação específica do sistema de alarmes
 
 ## Compatibilidade
 Todas as melhorias são retrocompatíveis e não alteram a interface externa do sistema. O comportamento básico permanece o mesmo, mas com maior robustez e segurança.
 
 ---
 *Data da Implementação: Outubro 2025*
-*Versão do Sistema: 2.0*</content>
+*Versão do Sistema: 2.1*</content>
 <parameter name="filePath">c:\Users\mauro.bueno\Downloads\PerfilBobinadeira\melhorias.txt

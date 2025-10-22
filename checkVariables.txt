@@ -49,7 +49,11 @@ xx VerificationTrigger_rolo1 : BOOL;
 xx VerificationStep_rolo1 : INT := 0;
 xx ReadMsg_P0100_rolo1 : MSG_MODBUS; // Para verificar P0100
 xx ReadMsg_P0134_P0133_rolo1 : MSG_MODBUS; // P0134 (Max Speed) e P0133 (Min Speed)
-xx ReadMsg_P0169_P0170_rolo1 : MSG_MODBUS; // P0169 (Max Torque) e P0170 (Min Torque)
+xx ReadMsg_P0169_P0170_rolo3 : MSG_MODBUS; // P0169 (Max Torque) e P0170 (Min Torque)
+xx SpeedTorqueAlarm_rolo3 : BOOL := FALSE; // Alarm for low speed vs high torque condition
+xx SpeedTorqueAlarmTimer_rolo3 : TON; // Timer to delay alarm activation and avoid false alarms
+xx SpeedTorqueAlarm_rolo1 : BOOL := FALSE; // Alarm for low speed vs high torque condition
+xx SpeedTorqueAlarmTimer_rolo1 : TON; // Timer to delay alarm activation and avoid false alarms
 xx WriteRetryCount_rolo1 : INT := 0; // Retry counter for write operations
 xx ReadRetryCount_rolo1 : INT := 0; // Retry counter for read operations
 xx VerificationRetryCount_rolo1 : INT := 0; // Retry counter for verification operations
@@ -94,6 +98,8 @@ xx VerificationStep_rolo2 : INT := 0;
 xx ReadMsg_P0100_rolo2 : MSG_MODBUS; // Para verificar P0100
 xx ReadMsg_P0134_P0133_rolo2 : MSG_MODBUS; // P0134 (Max Speed) e P0133 (Min Speed)
 xx ReadMsg_P0169_P0170_rolo2 : MSG_MODBUS; // P0169 (Max Torque) e P0170 (Min Torque)
+xx SpeedTorqueAlarm_rolo2 : BOOL := FALSE; // Alarm for low speed vs high torque condition
+xx SpeedTorqueAlarmTimer_rolo2 : TON; // Timer to delay alarm activation and avoid false alarms
 xx WriteRetryCount_rolo2 : INT := 0; // Retry counter for write operations
 xx ReadRetryCount_rolo2 : INT := 0; // Retry counter for read operations
 xx VerificationRetryCount_rolo2 : INT := 0; // Retry counter for verification operations
@@ -145,7 +151,8 @@ x SPEED_MAX_LIMIT : REAL := 100.0; // Maximum speed limit in Hz
 x SPEED_MIN_LIMIT : REAL := 0.0; // Minimum speed limit in Hz
 x TORQUE_MAX_LIMIT : REAL := 200.0; // Maximum torque limit in %
 x TORQUE_MIN_LIMIT : REAL := 0.0; // Minimum torque limit in %
-x ERROR_RECOVERY_TIME : TIME := T#30s; // Time after which to clear error flags on successful communication
+x SPEED_TORQUE_RATIO : REAL := 0.5; // Minimum speed/torque ratio (Hz/%). Ex: 0.5 means speed >= torque% * 0.5
+x SPEED_TORQUE_ALARM_DELAY : TIME := T#5s; // Delay before triggering speed-torque alarm to avoid false alarms
 x ErrorRecoveryTimer_rolo1 : TON; // Timer for clearing error flags after successful communication
 x ErrorRecoveryTimer_rolo2 : TON;
 x ErrorRecoveryTimer_rolo3 : TON;

@@ -87,7 +87,8 @@ e sua correlação direta com as variáveis no controlador Micro850.
 - **Escopo**: 
   - Setpoints (TorqueMax, SpeedMax, SpeedMin): Global Variables
   - Controles por botão (P0498Set, WriteTrigger): Variáveis locais do POU
-- **Tipo de Dados**: UINT para setpoints, BOOL para gatilhos
+  - Constantes globais (SPEED_TORQUE_RATIO, SPEED_TORQUE_ALARM_DELAY): Global Variables
+- **Tipo de Dados**: UINT para setpoints, BOOL para gatilhos, REAL para constantes
 - **Inicialização**: Conforme valores padrão do sistema
 - **Acesso HMI**: Leitura/Escrita via tags do PV800
 
@@ -98,17 +99,28 @@ e sua correlação direta com as variáveis no controlador Micro850.
 4. Implementar botões liga/desliga (toggle) para LIGA_ROLOX (controle principal do drive)
 5. Implementar botões/momentary switches para os gatilhos WriteTrigger
 6. Implementar botões toggle/on-off para controle P0498
-7. Implementar validação no IHM (opcional, já existe no PLC)
-8. Considerar interface amigável com unidades em % e Hz (não valores UINT)
+7. Implementar indicadores visuais (luzes/ícones) para alarmes SpeedTorqueAlarm_roloX
+8. Implementar validação no IHM (opcional, já existe no PLC)
+9. Considerar interface amigável com unidades em % e Hz (não valores UINT)
 
 ## Monitoramento e Diagnóstico
 As seguintes variáveis podem ser lidas no IHM para monitoramento:
 - CommunicationOK_roloX: Status de comunicação Modbus
 - WriteError_roloX: Erro de escrita
 - ReadError_roloX: Erro de leitura
+- SpeedTorqueAlarm_roloX: Alarme velocidade vs torque (TRUE=alarme ativo)
 - OutputFreqScaled_roloX: Frequência de saída atual (Hz)
 - TorquePercentScaled_roloX: Torque atual (%)
 - OutputCurrentScaled_roloX: Corrente de saída (A)
+
+## Sistema de Alarmes
+
+### Alarme Velocidade vs Torque
+- **Descrição**: Detecta quando a velocidade está muito baixa em relação ao torque aplicado
+- **Lógica**: Ativado quando torque > 20% E velocidade < (torque% × 0.5) E drive habilitado
+- **Objetivo**: Identificar motor travado, torque insuficiente ou problemas mecânicos
+- **Atraso**: 5 segundos para evitar alarmes falsos durante aceleração/desaceleração
+- **Reset**: Automático quando velocidade retorna ao nível adequado ou drive desabilitado
 
 ## Integração com Lógica Ladder
 - **EnableDrive_roloX**: Deve ser integrada com lógica Ladder para controle efetivo de partida/parada do drive
