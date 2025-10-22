@@ -42,6 +42,8 @@ SPEED_MAX_LIMIT : REAL := 100.0; // Maximum speed limit in Hz
 SPEED_MIN_LIMIT : REAL := 0.0; // Minimum speed limit in Hz
 TORQUE_MAX_LIMIT : REAL := 200.0; // Maximum torque limit in %
 TORQUE_MIN_LIMIT : REAL := 0.0; // Minimum torque limit in %
+SPEED_TORQUE_RATIO : REAL := 0.5; // Minimum speed/torque ratio (Hz/%). Ex: 0.5 means speed >= torque% * 0.5
+SPEED_TORQUE_ALARM_DELAY : TIME := T#5s; // Delay before triggering speed-torque alarm to avoid false alarms
 ERROR_RECOVERY_TIME : TIME := T#30s; // Time after which to clear error flags on successful communication
 ErrorRecoveryTimer_rolo1 : TON; // Timer for clearing error flags after successful communication
 ErrorRecoveryTimer_rolo2 : TON;
@@ -87,6 +89,8 @@ VerificationStep_rolo1 : INT := 0;
 ReadMsg_P0100_rolo1 : MSG_MODBUS; // Para verificar P0100
 ReadMsg_P0134_P0133_rolo1 : MSG_MODBUS; // P0134 (Max Speed) e P0133 (Min Speed)
 ReadMsg_P0169_P0170_rolo1 : MSG_MODBUS; // P0169 (Max Torque) e P0170 (Min Torque)
+SpeedTorqueAlarm_rolo1 : BOOL := FALSE; // Alarm for low speed vs high torque condition
+SpeedTorqueAlarmTimer_rolo1 : TON; // Timer to delay alarm activation and avoid false alarms
 Variáveis para CTRLROLO2 (POU)
 LocalCfg_rolo2 : MODBUSLOCPARA := (Channel := 2, TriggerType := 0);
 TargetCfg_rolo2 : MODBUSTARPARA := (Node := 2);
@@ -128,6 +132,8 @@ VerificationStep_rolo2 : INT := 0;
 ReadMsg_P0100_rolo2 : MSG_MODBUS; // Para verificar P0100
 ReadMsg_P0134_P0133_rolo2 : MSG_MODBUS; // P0134 (Max Speed) e P0133 (Min Speed)
 ReadMsg_P0169_P0170_rolo2 : MSG_MODBUS; // P0169 (Max Torque) e P0170 (Min Torque)
+SpeedTorqueAlarm_rolo2 : BOOL := FALSE; // Alarm for low speed vs high torque condition
+SpeedTorqueAlarmTimer_rolo2 : TON; // Timer to delay alarm activation and avoid false alarms
 Variáveis para CTRLROLO3 (POU)
 LocalCfg_rolo3 : MODBUSLOCPARA := (Channel := 2, TriggerType := 0);
 TargetCfg_rolo3 : MODBUSTARPARA := (Node := 3);
@@ -169,6 +175,8 @@ VerificationStep_rolo3 : INT := 0;
 ReadMsg_P0100_rolo3 : MSG_MODBUS; // Para verificar P0100
 ReadMsg_P0134_P0133_rolo3 : MSG_MODBUS; // P0134 (Max Speed) e P0133 (Min Speed)
 ReadMsg_P0169_P0170_rolo3 : MSG_MODBUS; // P0169 (Max Torque) e P0170 (Min Torque)
+SpeedTorqueAlarm_rolo3 : BOOL := FALSE; // Alarm for low speed vs high torque condition
+SpeedTorqueAlarmTimer_rolo3 : TON; // Timer to delay alarm activation and avoid false alarms
 Notas:
 Inicializações: Aplicadas apenas onde especificadas (ex.: := 0 para INTs, structs para MODBUSLOCPARA/MODBUSTARPARA).
 Tipos de Dados: Certifique-se de que os tipos (ex.: MODBUSLOCPARA, MSG_MODBUS) estejam disponíveis no CCW (geralmente pré-definidos para Modbus).
