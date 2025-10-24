@@ -53,38 +53,41 @@ Este documento contém todas as variáveis necessárias para o projeto no Connec
 
 ### Sistema de Retry e Recuperação de Erros
 
-| Variável                     | Tipo | Valor Inicial | Descrição                                        |
-| ---------------------------- | ---- | ------------- | ------------------------------------------------ |
-| MAX_RETRIES                  | INT  | 3             | Maximum retry attempts for failed communications |
-| WriteRetryCount_rolo1        | INT  | 0             | Retry counter for write operations               |
-| ReadRetryCount_rolo1         | INT  | 0             | Retry counter for read operations                |
-| VerificationRetryCount_rolo1 | INT  | 0             | Retry counter for verification operations        |
-| WriteRetryCount_rolo2        | INT  | 0             | Retry counter for write operations               |
-| ReadRetryCount_rolo2         | INT  | 0             | Retry counter for read operations                |
-| VerificationRetryCount_rolo2 | INT  | 0             | Retry counter for verification operations        |
-| WriteRetryCount_rolo3        | INT  | 0             | Retry counter for write operations               |
-| ReadRetryCount_rolo3         | INT  | 0             | Retry counter for read operations                |
-| VerificationRetryCount_rolo3 | INT  | 0             | Retry counter for verification operations        |
+| Variável                         | Tipo | Valor Inicial | Descrição                                       |
+| -------------------------------- | ---- | ------------- | ----------------------------------------------- |
+| MAX_RETRIES                      | INT  | 3             | Número máximo de tentativas para comunicações   |
+| WriteRetryCount_rolo1            | INT  | 0             | Contador de retry para operações de escrita     |
+| ReadRetryCount_rolo1             | INT  | 0             | Contador de retry para operações de leitura     |
+| ReadRetryCount_P0409_P0410_rolo1 | INT  | 0             | Contador de retry para leitura P0409/P0410      |
+| VerificationRetryCount_rolo1     | INT  | 0             | Contador de retry para operações de verificação |
+| WriteRetryCount_rolo2            | INT  | 0             | Contador de retry para operações de escrita     |
+| ReadRetryCount_rolo2             | INT  | 0             | Contador de retry para operações de leitura     |
+| ReadRetryCount_P0409_P0410_rolo2 | INT  | 0             | Contador de retry para leitura P0409/P0410      |
+| VerificationRetryCount_rolo2     | INT  | 0             | Contador de retry para operações de verificação |
+| WriteRetryCount_rolo3            | INT  | 0             | Contador de retry para operações de escrita     |
+| ReadRetryCount_rolo3             | INT  | 0             | Contador de retry para operações de leitura     |
+| ReadRetryCount_P0409_P0410_rolo3 | INT  | 0             | Contador de retry para leitura P0409/P0410      |
+| VerificationRetryCount_rolo3     | INT  | 0             | Contador de retry para operações de verificação |
 
 ### Limites e Constantes do Sistema
 
-| Variável                 | Tipo | Valor Inicial | Descrição                                  | Unidades |
-| ------------------------ | ---- | ------------- | ------------------------------------------ | -------- |
-| SPEED_MAX_LIMIT          | REAL | 100.0         | Maximum speed limit in Hz                  | Hz       |
-| SPEED_MIN_LIMIT          | REAL | 0.0           | Minimum speed limit in Hz                  | Hz       |
-| TORQUE_MAX_LIMIT         | REAL | 200.0         | Maximum torque limit in %                  | %        |
-| TORQUE_MIN_LIMIT         | REAL | 0.0           | Minimum torque limit in %                  | %        |
-| SPEED_TORQUE_RATIO       | REAL | 0.5           | Minimum speed/torque ratio (Hz/%)          | Hz/%     |
-| SPEED_TORQUE_ALARM_DELAY | TIME | T#5s          | Delay before triggering speed-torque alarm | segundos |
-| ERROR_RECOVERY_TIME      | TIME | T#30s         | Time after which to clear error flags      | segundos |
+| Variável                 | Tipo | Valor Inicial | Descrição                                         | Unidades |
+| ------------------------ | ---- | ------------- | ------------------------------------------------- | -------- |
+| SPEED_MAX_LIMIT          | REAL | 100.0         | Limite máximo de velocidade em Hz                 | Hz       |
+| SPEED_MIN_LIMIT          | REAL | 0.0           | Limite mínimo de velocidade em Hz                 | Hz       |
+| TORQUE_MAX_LIMIT         | REAL | 200.0         | Limite máximo de torque em %                      | %        |
+| TORQUE_MIN_LIMIT         | REAL | 0.0           | Limite mínimo de torque em %                      | %        |
+| SPEED_TORQUE_RATIO       | REAL | 0.5           | Razão mínima velocidade/torque (Hz/%)             | Hz/%     |
+| SPEED_TORQUE_ALARM_DELAY | TIME | T#5s          | Atraso antes de disparar alarme velocidade-torque | segundos |
+| ERROR_RECOVERY_TIME      | TIME | T#30s         | Tempo após o qual limpar flags de erro            | segundos |
 
 ### Timers de Recuperação de Erros
 
 | Variável                 | Tipo | Valor Inicial | Descrição                                                     |
 | ------------------------ | ---- | ------------- | ------------------------------------------------------------- |
-| ErrorRecoveryTimer_rolo1 | TON  | -             | Timer for clearing error flags after successful communication |
-| ErrorRecoveryTimer_rolo2 | TON  | -             | Timer for clearing error flags after successful communication |
-| ErrorRecoveryTimer_rolo3 | TON  | -             | Timer for clearing error flags after successful communication |
+| ErrorRecoveryTimer_rolo1 | TON  | -             | Timer para limpar flags de erro após comunicação bem-sucedida |
+| ErrorRecoveryTimer_rolo2 | TON  | -             | Timer para limpar flags de erro após comunicação bem-sucedida |
+| ErrorRecoveryTimer_rolo3 | TON  | -             | Timer para limpar flags de erro após comunicação bem-sucedida |
 
 ## Variáveis para CTRLROLO1 (POU)
 
@@ -103,6 +106,7 @@ Este documento contém todas as variáveis necessárias para o projeto no Connec
 | WriteMsg_rolo1            | MSG_MODBUS | -             | Mensagem de escrita Modbus                        |
 | ReadMsg_P0009_rolo1       | MSG_MODBUS | -             | Leitura P0009 (Torque)                            |
 | ReadMsg_P0002_P0003_rolo1 | MSG_MODBUS | -             | P0002 (Output Frequency) e P0003 (Output Current) |
+| ReadMsg_P0409_P0410_rolo1 | MSG_MODBUS | -             | Leitura P0409 e P0410                             |
 | ReadMsg_P0100_rolo1       | MSG_MODBUS | -             | Para verificar P0100                              |
 | ReadMsg_P0134_P0133_rolo1 | MSG_MODBUS | -             | P0134 (Max Speed) e P0133 (Min Speed)             |
 | ReadMsg_P0169_P0170_rolo1 | MSG_MODBUS | -             | P0169 (Max Torque) e P0170 (Min Torque)           |
@@ -116,11 +120,12 @@ Este documento contém todas as variáveis necessárias para o projeto no Connec
 
 ### Timers
 
-| Variável                    | Tipo | Valor Inicial | Descrição                           |
-| --------------------------- | ---- | ------------- | ----------------------------------- |
-| ReadTimer_rolo1             | TON  | -             | Timer para leituras periódicas      |
-| VerificationTimer_rolo1     | TON  | -             | Timer para verificações periódicas  |
-| SpeedTorqueAlarmTimer_rolo1 | TON  | -             | Timer para alarme velocidade-torque |
+| Variável                    | Tipo | Valor Inicial | Descrição                                |
+| --------------------------- | ---- | ------------- | ---------------------------------------- |
+| ReadTimer_rolo1             | TON  | -             | Timer para leituras periódicas (10s)     |
+| ReadTimer_P0409_P0410_rolo1 | TON  | -             | Timer para leitura P0409/P0410 (10s)     |
+| VerificationTimer_rolo1     | TON  | -             | Timer para verificações periódicas (10s) |
+| SpeedTorqueAlarmTimer_rolo1 | TON  | -             | Timer para alarme velocidade-torque      |
 
 ### Setpoints Calculados
 
@@ -149,6 +154,8 @@ Este documento contém todas as variáveis necessárias para o projeto no Connec
 | TorquePercent_rolo1 | UINT | -             | Percentual de torque        |
 | OutputFreq_rolo1    | UINT | -             | Frequência de saída (P0002) |
 | OutputCurrent_rolo1 | UINT | -             | Corrente de saída (P0003)   |
+| P0409_rolo1         | UINT | -             | Valor bruto P0409           |
+| P0410_rolo1         | UINT | -             | Valor bruto P0410           |
 
 ### Valores Escalados para Display
 
@@ -157,18 +164,21 @@ Este documento contém todas as variáveis necessárias para o projeto no Connec
 | TorquePercentScaled_rolo1 | REAL | -             | Torque percentual escalado   | %        |
 | OutputCurrentScaled_rolo1 | REAL | -             | Corrente de saída escalada   | A        |
 | OutputFreqScaled_rolo1    | REAL | -             | Frequência de saída escalada | Hz       |
+| P0409Scaled_rolo1         | REAL | -             | Valor escalado P0409         | -        |
+| P0410Scaled_rolo1         | REAL | -             | Valor escalado P0410         | -        |
 | TempReal_rolo1            | REAL | -             | Variável temporária REAL     | -        |
 
 ### Controle de Estado e Sequências
 
-| Variável                  | Tipo | Valor Inicial | Descrição                        |
-| ------------------------- | ---- | ------------- | -------------------------------- |
-| WriteStep_rolo1           | INT  | 0             | Passo da escrita sequencial      |
-| ReadStep_rolo1            | INT  | 0             | Passo da leitura sequencial      |
-| VerificationStep_rolo1    | INT  | 0             | Passo da verificação             |
-| ControlTypeSet_rolo1      | UINT | 2             | P0100 = 2 para Vector Sensorless |
-| ControlTypeRead_rolo1     | UINT | -             | Tipo de controle lido            |
-| VerificationTrigger_rolo1 | BOOL | -             | Gatilho de verificação           |
+| Variável                   | Tipo | Valor Inicial | Descrição                        |
+| -------------------------- | ---- | ------------- | -------------------------------- |
+| WriteStep_rolo1            | INT  | 0             | Passo da escrita sequencial      |
+| ReadStep_rolo1             | INT  | 0             | Passo da leitura sequencial      |
+| ReadStep_P0409_P0410_rolo1 | INT  | 0             | Passo da leitura P0409/P0410     |
+| VerificationStep_rolo1     | INT  | 0             | Passo da verificação             |
+| ControlTypeSet_rolo1       | UINT | 2             | P0100 = 2 para Vector Sensorless |
+| ControlTypeRead_rolo1      | UINT | -             | Tipo de controle lido            |
+| VerificationTrigger_rolo1  | BOOL | -             | Gatilho de verificação           |
 
 ### Status e Controle do Drive
 
@@ -184,9 +194,25 @@ Este documento contém todas as variáveis necessárias para o projeto no Connec
 
 _(Mesmas variáveis que CTRLROLO1, com sufixo `_rolo2` e Node := 2)_
 
+### Configurações Modbus - Rolo2
+
+| Variável        | Tipo          | Valor Inicial                    | Descrição                   |
+| --------------- | ------------- | -------------------------------- | --------------------------- |
+| LocalCfg_rolo2  | MODBUSLOCPARA | (Channel := 2, TriggerType := 0) | Configuração local Modbus   |
+| TargetCfg_rolo2 | MODBUSTARPARA | (Node := 2)                      | Configuração do alvo Modbus |
+| LocalAddr_rolo2 | MODBUSLOCADDR | -                                | Endereço local Modbus       |
+
 ## Variáveis para CTRLROLO3 (POU)
 
 _(Mesmas variáveis que CTRLROLO1, com sufixo `_rolo3` e Node := 3)_
+
+### Configurações Modbus - Rolo3
+
+| Variável        | Tipo          | Valor Inicial                    | Descrição                   |
+| --------------- | ------------- | -------------------------------- | --------------------------- |
+| LocalCfg_rolo3  | MODBUSLOCPARA | (Channel := 2, TriggerType := 0) | Configuração local Modbus   |
+| TargetCfg_rolo3 | MODBUSTARPARA | (Node := 3)                      | Configuração do alvo Modbus |
+| LocalAddr_rolo3 | MODBUSLOCADDR | -                                | Endereço local Modbus       |
 
 ## Notas Técnicas
 
@@ -199,11 +225,12 @@ _(Mesmas variáveis que CTRLROLO1, com sufixo `_rolo3` e Node := 3)_
 
 - `ModbusBusy` deve ser acessível de todos os POUs (declarar como global no projeto)
 
-### Timers
+### Timers e Periodicidades
 
-- `ReadTimer`: 1 segundo para leituras periódicas
-- `VerificationTimer`: 10 segundos para verificações críticas
-- `SpeedTorqueAlarmTimer`: 5 segundos para evitar alarmes falsos
+- **ReadTimer**: 10 segundos para leituras de P0009, P0002, P0003 (torque, frequência, corrente)
+- **ReadTimer_P0409_P0410**: 10 segundos para leituras exclusivas de P0409/P0410
+- **VerificationTimer**: 10 segundos para verificações críticas de parâmetros (P0100, velocidades, torques)
+- **SpeedTorqueAlarmTimer**: 5 segundos para evitar alarmes falsos de velocidade vs torque
 
 ### Variáveis para PV800
 
@@ -214,13 +241,34 @@ _(Mesmas variáveis que CTRLROLO1, com sufixo `_rolo3` e Node := 3)_
 
 - Apenas escreve parâmetros quando valores do HMI mudam
 - Evita escritas desnecessárias no equipamento
+- Sistema de retry com até 3 tentativas por operação
 
 ### Sistema de Alarmes
 
 - `SpeedTorqueAlarm`: Detecta quando velocidade < torque% × SPEED_TORQUE_RATIO
 - Só ativo quando torque > 20% e drive habilitado
+- Delay de 5 segundos para evitar falsos positivos
+
+### Parâmetros P0409/P0410
+
+- **P0409**: Parâmetro adicional do inversor (verificar manual CFW500 para detalhes)
+- **P0410**: Parâmetro adicional do inversor (verificar manual CFW500 para detalhes)
+- Leitura separada com periodicidade de 10 segundos
+- Escalas podem variar conforme definição dos parâmetros no CFW500
+- Valores brutos (P0409, P0410) e escalados (P0409Scaled, P0410Scaled) disponíveis
+- Sistema de retry independente para estas leituras
+
+### Estrutura de Comunicação
+
+- Todas as operações Modbus são sequenciais usando flag `ModbusBusy`
+- Três ciclos independentes:
+  1. **Write Cycle**: Escrita de parâmetros (sob demanda)
+  2. **Read Cycle**: Leitura de monitoramento a cada 10s
+  3. **Verification Cycle**: Verificação e correção de parâmetros críticos a cada 10s
+  4. **P0409/P0410 Read Cycle**: Leitura exclusiva de P0409/P0410 a cada 10s
 
 ---
 
 _Data da Documentação: Outubro 2025_
-_Versão do Sistema: 2.1_
+_Versão do Sistema: 2.2_
+_Última Atualização: Adição de leitura P0409/P0410 com ciclo independente_

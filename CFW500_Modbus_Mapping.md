@@ -1,134 +1,380 @@
-# CFW500 Modbus RTU Register Mapping Documentation
+# CFW500 Modbus Register Mapping
 
 ## Overview
 
-This document provides detailed mapping of CFW500 inverter parameters used in the polymer profiling machine control system. All registers are accessed via Modbus RTU protocol with the following configuration:
+This document provides the Modbus register mapping for the WEG CFW500 frequency inverter used in the winding machine control system. All three rollers (Rolo 1, 2, and 3) use identical parameter structures but are accessed via different Modbus node addresses.
+
+## Connection Details
 
 - **Protocol**: Modbus RTU
-- **Baud Rate**: Configured in Micro850 channel settings
-- **Parity**: None (typical for industrial applications)
-- **Data Bits**: 8
-- **Stop Bits**: 1
-- **Node Addresses**: 1, 2, 3 (one per roller/inverter)
+- **Node Addresses**:
+  - Rolo 1: Node = 1
+  - Rolo 2: Node = 2
+  - Rolo 3: Node = 3
+- **Channel**: 2 (configured in PLC)
+- **Baud Rate**: Typically 9600 or 19200 (verify in inverter settings)
+- **Data Format**: 8-N-1 (8 data bits, No parity, 1 stop bit)
 
-## Register Addressing Convention
+## Register Address Convention
 
-- All addresses are holding registers (function code 3 for read, 16 for write)
-- CFW500 parameter PXXXX maps to Modbus register XXXX
-- Example: P0009 (Torque) = Register 9
+CFW500 uses a direct mapping where parameter Pxxxx corresponds to Modbus holding register address xxxx.
 
-## Parameter Mapping Table
+**Example**: P0134 → Holding Register 134
 
-### Monitoring Parameters (Read-Only)
+## Function Codes Used
 
-| Parameter | Register | Description      | Scaling | Units | Data Type | Update Rate |
-| --------- | -------- | ---------------- | ------- | ----- | --------- | ----------- |
-| P0002     | 2        | Output Frequency | ×0.1    | Hz    | UINT      | 1 second    |
-| P0003     | 3        | Output Current   | ×0.1    | A     | UINT      | 1 second    |
-| P0009     | 9        | Motor Torque     | ×0.1    | %     | UINT      | 1 second    |
+| Function Code | Description              | Usage in Project                    |
+| ------------- | ------------------------ | ----------------------------------- |
+| 3             | Read Holding Registers   | Read parameters and monitoring data |
+| 6             | Write Single Register    | Write individual parameters         |
+| 16            | Write Multiple Registers | Write consecutive parameters        |
 
-### Control Parameters (Read/Write)
+## Critical Parameters
 
-| Parameter | Register | Description             | Scaling | Units | Data Type | Default | Range         |
-| --------- | -------- | ----------------------- | ------- | ----- | --------- | ------- | ------------- |
-| P0100     | 100      | Control Type            | 1:1     | -     | UINT      | 2       | 0-5           |
-| P0133     | 133      | Minimum Speed Reference | ×0.01   | Hz    | UINT      | 0       | 0-SpeedMax    |
-| P0134     | 134      | Maximum Speed Reference | ×0.01   | Hz    | UINT      | 6000    | SpeedMin-6500 |
-| P0169     | 169      | Maximum Torque Limit    | ×0.1    | %     | UINT      | 1500    | 0-2000        |
-| P0170     | 170      | Minimum Torque Limit    | ×0.1    | %     | UINT      | 0       | -2000-0       |
-| P0498     | 498      | Parameter Save          | 0/1     | -     | UINT      | 0       | 0-1           |
+### P0100 - Control Type
 
-## Control Type (P0100) Values
+| Parameter | Address | Type | Range | Description          | Units |
+| --------- | ------- | ---- | ----- | -------------------- | ----- |
+| P0100     | 100     | UINT | 0-5   | Motor control method | -     |
 
-- **0**: V/F Control
-- **1**: V/F with Encoder
-- **2**: Vector Sensorless (Used in this application)
-- **3**: Vector with Encoder
-- **4**: V/F Quadratic
-- **5**: V/F with Encoder Quadratic
+**Values**:
 
-## Scaling Details
+- 0 = V/f (Scalar)
+- 1 = VVW (Vector Voltage/Frequency)
+- **2 = Vector Sensorless** ← Used in this project
+- 3 = Vector with Encoder
+- 4 = Vector with Resolver
+- 5 = Direct Torque Control
 
-### Frequency Parameters (P0133, P0134)
+**Project Configuration**: Set to 2 (Vector Sensorless) for optimal torque control.
 
-- **HMI Input**: Real number in Hz (e.g., 60.0 Hz)
-- **Scaling**: Multiply by 100 to get UINT (e.g., 60.0 × 100 = 6000)
-- **CFW500 Storage**: UINT representing 0.01 Hz units
-- **Formula**: `Register_Value = HMI_Value × 100`
+### Speed Limits
 
-### Torque Parameters (P0169, P0170)
+| Parameter | Address | Type | Range   | Description   | Units  | Scaling |
+| --------- | ------- | ---- | ------- | ------------- | ------ | ------- |
+| P0133     | 133     | UINT | 0-60000 | Minimum Speed | 0.01Hz | ÷100    |
+| P0134     | 134     | UINT | 0-60000 | Maximum Speed | 0.01Hz | ÷100    |
 
-- **HMI Input**: Real number in % (e.g., 150.0%)
-- **Scaling**: Multiply by 10 to get UINT (e.g., 150.0 × 10 = 1500)
-- **CFW500 Storage**: UINT representing 0.1% units
-- **Formula**: `Register_Value = HMI_Value × 10`
+**Notes**:
 
-### Monitoring Parameters (P0002, P0003, P0009)
+- Values stored as 0.01 Hz units
+- Example: 6000 = 60.00 Hz
+- Project limits: 0-100 Hz (validated before writing)
 
-- **CFW500 Output**: UINT in scaled units
-- **HMI Display**: Divide by 10 for real values
-- **Formula**: `Display_Value = Register_Value ÷ 10`
+### Torque Limits
 
-## Communication Protocol Details
+| Parameter | Address | Type | Range  | Description    | Units | Scaling |
+| --------- | ------- | ---- | ------ | -------------- | ----- | ------- |
+| P0169     | 169     | UINT | 0-2000 | Maximum Torque | 0.1%  | ÷10     |
+| P0170     | 170     | UINT | 0-2000 | Minimum Torque | 0.1%  | ÷10     |
 
-### Read Operations
+**Notes**:
 
-- **Function Code**: 3 (Read Holding Registers)
-- **Single Register**: ElementCnt = 1
-- **Multiple Registers**: ElementCnt = 2 (for consecutive parameters)
+- Values stored as 0.1% units
+- Example: 1000 = 100.0%
+- Project limits: 0-200% (validated before writing)
+- P0170 typically set to 0 in this application
 
-### Write Operations
+### Enable/Disable Parameter
 
-- **Function Code**: 6 (Preset Single Register) for single parameters
-- **Function Code**: 16 (Preset Multiple Registers) for consecutive parameters
-- **ElementCnt**: Number of registers to write
+| Parameter | Address | Type | Range | Description             | Units |
+| --------- | ------- | ---- | ----- | ----------------------- | ----- |
+| P0498     | 498     | UINT | 0-1   | Parameter Change Enable | -     |
+
+**Values**:
+
+- 0 = Parameter changes disabled
+- 1 = Parameter changes enabled
+
+**Notes**:
+
+- Must be set to 1 before modifying drive parameters
+- Automatically handled by verification logic
+
+## Monitoring Parameters
+
+### Real-time Operating Data
+
+| Parameter | Address | Type | Range    | Description              | Units    | Scaling  | Read Cycle |
+| --------- | ------- | ---- | -------- | ------------------------ | -------- | -------- | ---------- |
+| P0002     | 2       | UINT | 0-60000  | Output Frequency         | 0.1Hz    | ÷10      | 10s        |
+| P0003     | 3       | UINT | 0-65535  | Output Current           | 0.1A     | ÷10      | 10s        |
+| P0009     | 9       | UINT | 0-2000   | Motor Torque             | 0.1%     | ÷10      | 10s        |
+| P0409     | 409     | UINT | Variable | Additional Parameter 1\* | Variable | Variable | 10s        |
+| P0410     | 410     | UINT | Variable | Additional Parameter 2\* | Variable | Variable | 10s        |
+
+**Notes on P0409 and P0410**: The exact function of these parameters depends on CFW500 configuration and firmware version. Consult your specific inverter manual for:
+
+- Detailed function and description
+- Appropriate scaling factor
+- Valid value range
+- Units of measurement
+
+Common possible uses:
+
+- Inverter temperature
+- DC bus voltage
+- Active/reactive power
+- Additional operational states
+
+### Additional Useful Parameters (Not Currently Implemented)
+
+The following parameters may be useful for future system expansion:
+
+| Parameter | Address | Type | Range   | Description          | Scaling | Units | Access     |
+| --------- | ------- | ---- | ------- | -------------------- | ------- | ----- | ---------- |
+| P0001     | 1       | UINT | 0-65535 | Motor Speed          | ×1      | RPM   | Read Only  |
+| P0004     | 4       | UINT | 0-65535 | Output Voltage       | ×1      | V     | Read Only  |
+| P0005     | 5       | UINT | 0-60000 | Input Frequency      | ×0.01   | Hz    | Read Only  |
+| P0006     | 6       | UINT | 0-65535 | DC Link Voltage      | ×1      | V     | Read Only  |
+| P0007     | 7       | UINT | 0-200   | Inverter Temperature | ×1      | °C    | Read Only  |
+| P0011     | 11      | UINT | Bitmap  | Inverter Status      | Bitmap  | -     | Read Only  |
+| P0220     | 220     | UINT | 0-9999  | Acceleration Time    | ×0.1    | s     | Read/Write |
+| P0221     | 221     | UINT | 0-9999  | Deceleration Time    | ×0.1    | s     | Read/Write |
+
+## Parameter Access Sequence
+
+### Write Sequence (On HMI Change)
+
+1. **Step 0**: Write P0134 (Max Speed)
+2. **Step 1**: Write P0133 (Min Speed)
+3. **Step 2**: Write P0169 (Max Torque)
+4. **Step 3**: Write P0170 (Min Torque)
+5. **Step 4**: Write P0498 (Enable/Disable)
+
+**Notes**:
+
+- Sequential execution with retry logic (max 3 attempts)
+- Only triggered when HMI values change
+- Avoids unnecessary writes to inverter
+
+### Read Sequence (Every 10 seconds)
+
+**Monitoring Cycle**:
+
+1. **Step 1**: Read P0009 (Torque)
+2. **Step 2**: Read P0002 and P0003 (Frequency and Current) - consecutive read
+
+**P0409/P0410 Cycle** (separate, also every 10 seconds):
+
+1. **Step 1**: Read P0409 and P0410 - consecutive read
+
+**Notes**:
+
+- ModbusBusy flag ensures sequential access
+- Each operation includes retry logic
+- Consecutive registers read together for efficiency
+
+### Verification Sequence (Every 10 seconds)
+
+1. **Step 1**: Read P0100, verify and force to 2 if different
+2. **Step 2**: Read P0134/P0133, verify and force if different
+3. **Step 3**: Read P0169/P0170, verify and force if different
+
+**Purpose**: Ensures critical parameters remain at desired values even if changed externally.
+
+## Data Scaling Examples
+
+### Speed Conversion
+
+```
+HMI Value (Hz) → Inverter Value
+60.00 Hz × 100 = 6000 (0x1770)
+
+Inverter Value → Display Value
+6000 ÷ 100.0 = 60.00 Hz
+```
+
+### Torque Conversion
+
+```
+HMI Value (%) → Inverter Value
+100.0% × 10 = 1000 (0x03E8)
+
+Inverter Value → Display Value
+1000 ÷ 10.0 = 100.0%
+```
+
+### Current Conversion
+
+```
+Inverter Value → Display Value
+245 ÷ 10.0 = 24.5 A
+```
 
 ## Error Handling
 
-- **Timeout**: System retries failed operations up to 3 times
-- **Error Flags**: Separate tracking for read/write/verification errors
-- **Recovery**: Automatic error clearing after 30 seconds of successful communication
+### Retry Mechanism
 
-## Application-Specific Usage
+- **Maximum Retries**: 3 attempts per operation
+- **Retry Counter Variables**:
+  - `WriteRetryCount_roloX`
+  - `ReadRetryCount_roloX`
+  - `ReadRetryCount_P0409_P0410_roloX` ← Separate retry counter for P0409/P0410
+  - `VerificationRetryCount_roloX`
 
-### Roller Control Logic
+### Error Flags
 
-Each roller (rolo1, rolo2, rolo3) implements identical control logic:
+| Flag                    | Description                          | Recovery                     |
+| ----------------------- | ------------------------------------ | ---------------------------- |
+| `WriteError_roloX`      | Write operation failed after retries | Cleared after 30s of success |
+| `ReadError_roloX`       | Read operation failed after retries  | Cleared after 30s of success |
+| `CommunicationOK_roloX` | Overall communication status         | Updated on each operation    |
 
-1. **Periodic Monitoring**: Reads P0002, P0003, P0009 every 1 second
-2. **Parameter Validation**: HMI inputs clamped to safe ranges before scaling
-3. **Change Detection**: Only writes parameters when HMI values differ from inverter values
-4. **Verification**: Checks critical parameters every 10 seconds and forces correction if needed
+### Error Recovery
 
-### Safety Limits
+- **Recovery Time**: 30 seconds (ERROR_RECOVERY_TIME)
+- **Mechanism**: Automatic flag clearing after sustained successful communication
+- **Implementation**: Uses TON timer per roller
 
-- **Speed Range**: 0.0 - 100.0 Hz (configurable via SPEED_MAX_LIMIT)
-- **Torque Range**: 0.0 - 200.0% (configurable via TORQUE_MAX_LIMIT)
-- **Inter-Lock**: SpeedMin ≤ SpeedMax enforced automatically
+## Communication Timing
 
-## Troubleshooting
+### Timer Configuration
+
+| Timer                 | Period | Purpose                           |
+| --------------------- | ------ | --------------------------------- |
+| ReadTimer             | 10s    | Triggers P0009, P0002, P0003 read |
+| ReadTimer_P0409_P0410 | 10s    | Triggers P0409, P0410 read        |
+| VerificationTimer     | 10s    | Triggers parameter verification   |
+| SpeedTorqueAlarmTimer | 5s     | Delay for speed-torque alarm      |
+| ErrorRecoveryTimer    | 30s    | Error flag auto-clear delay       |
+
+### Bus Arbitration
+
+- **Global Flag**: `ModbusBusy` (shared across all three rollers)
+- **Purpose**: Prevents simultaneous Modbus operations
+- **Usage**: Checked before any read/write operation
+- **Released**: After each operation completes
+
+## Alarm Logic
+
+### Speed vs Torque Monitoring
+
+**Condition**: `TorquePercentScaled > 20.0% AND OutputFreqScaled < (TorquePercentScaled × SPEED_TORQUE_RATIO)`
+
+**Parameters**:
+
+- **Threshold**: 20% torque
+- **Ratio**: 0.5 Hz/% (configurable via SPEED_TORQUE_RATIO constant)
+- **Delay**: 5 seconds before alarm activation
+- **Purpose**: Detect motor stall or insufficient power conditions
+
+**Example**:
+
+```
+If Torque = 80%
+Expected Minimum Speed = 80% × 0.5 = 40 Hz
+If Actual Speed < 40 Hz for 5 seconds → SpeedTorqueAlarm = TRUE
+```
+
+## Integration Notes
+
+### PLC Side (Connected Components Workbench)
+
+1. **Function Blocks Used**: `MSG_MODBUS`
+2. **Data Types Required**:
+   - `MODBUSLOCPARA` (Local configuration)
+   - `MODBUSTARPARA` (Target configuration)
+   - `MODBUSLOCADDR` (Address array)
+3. **Array Size**: Minimum 2 elements for consecutive reads
+
+### HMI Side (PanelView 800)
+
+1. **Input Variables** (from HMI):
+
+   - `TorqueMax_roloX` (UINT, 0.1% units)
+   - `SpeedMax_roloX` (UINT, 0.1 Hz units)
+   - `SpeedMin_roloX` (UINT, 0.1 Hz units)
+
+2. **Display Variables** (to HMI):
+
+   - `TorquePercentScaled_roloX` (REAL, %)
+   - `OutputFreqScaled_roloX` (REAL, Hz)
+   - `OutputCurrentScaled_roloX` (REAL, A)
+   - `P0409Scaled_roloX` (REAL, units TBD)
+   - `P0410Scaled_roloX` (REAL, units TBD)
+
+3. **Status Indicators**:
+   - `CommunicationOK_roloX` (BOOL)
+   - `WriteError_roloX` (BOOL)
+   - `ReadError_roloX` (BOOL)
+   - `SpeedTorqueAlarm_roloX` (BOOL)
+
+## Safety Limits
+
+### Enforced in PLC Logic
+
+| Parameter | Minimum | Maximum | Units |
+| --------- | ------- | ------- | ----- |
+| Speed     | 0.0     | 100.0   | Hz    |
+| Torque    | 0.0     | 200.0   | %     |
+
+**Implementation**: Values clamped before conversion to inverter units.
+
+## Troubleshooting Guide
 
 ### Common Issues
 
-1. **Communication Timeout**: Check Modbus wiring, baud rate, and node addresses
-2. **Parameter Not Updating**: Verify HMI value differs from current inverter value
-3. **Invalid Values**: Check scaling calculations and HMI input ranges
+1. **Communication Timeout**
 
-### Diagnostic Parameters
+   - Check physical RS-485 connection
+   - Verify node address configuration
+   - Check baud rate settings
+   - Ensure only one device using Modbus at a time
 
-- Monitor `CommunicationOK_roloX` for overall communication status
-- Check retry counters (`WriteRetryCount_roloX`, etc.) for communication quality
-- Review error flags for specific failure modes
+2. **Parameter Not Writing**
 
-## References
+   - Verify P0498 is set to 1 (enabled)
+   - Check if inverter is in local control mode
+   - Verify parameter is not locked by another function
 
-- CFW500 User Manual - Modbus RTU Communication
-- Allen Bradley Micro850 Controller - Modbus Master Configuration
-- IEC 61131-3 Structured Text Programming Guidelines
+3. **Incorrect Values**
+
+   - Verify scaling factors in code match manual
+   - Check data type conversions (UINT to REAL)
+   - Ensure proper bounds checking before write
+
+4. **Frequent Retries**
+
+   - Increase communication timeout if needed
+   - Check for electrical noise on RS-485 lines
+   - Verify proper cable termination
+
+5. **P0409/P0410 Unexpected Values**
+   - Consult specific CFW500 manual for parameter definitions
+   - Check inverter firmware version
+   - Adjust scaling according to actual parameter function
+
+## Future Expansion
+
+To add new parameters to the system:
+
+1. **Identify Parameter**: Consult CFW500 manual for number and function
+2. **Add Variables**: Create raw (UINT) and scaled (REAL) variables
+3. **Create MSG_MODBUS**: Instantiate new function block
+4. **Add to Cycle**: Integrate into appropriate read cycle
+5. **Implement Retry**: Add specific retry counter
+6. **Update HMI**: Create display/input screens as needed
+
+## Reference Documents
+
+- **WEG CFW500 User Manual**: Parameter definitions and electrical specifications
+- **WEG CFW500 Parameters Manual**: Firmware-specific parameter details
+- **WEG CFW500 Modbus Manual**: Detailed register mapping and protocol specifications
+- **Connected Components Workbench Help**: MSG_MODBUS function block documentation
+- **Modbus RTU Specification**: Protocol details and timing requirements
+
+## Version History
+
+| Version | Date    | Changes                                                                                              |
+| ------- | ------- | ---------------------------------------------------------------------------------------------------- |
+| 1.0     | 2025-10 | Initial documentation                                                                                |
+| 2.0     | 2025-10 | Added verification cycle, retry logic, alarm monitoring                                              |
+| 2.1     | 2025-10 | Corrected timer periodicities to 10s                                                                 |
+| 2.2     | 2025-10 | Added P0409/P0410 monitoring with separate 10s cycle, list of useful parameters for future expansion |
 
 ---
 
-_Document Version: 1.0_
-_Last Updated: October 22, 2025_
-_System: Polymer Profiling Machine - CFW500 Control_</content>
-<parameter name="filePath">c:\Users\mauro.bueno\Downloads\PerfilBobinadeira\CFW500_Modbus_Mapping.md
+_Last Updated: October 2025_
+_Project: Perfil Bobinadeira - Winding Machine Control System_
+_Changelog: Added P0409/P0410, useful parameters list for future expansion, bus arbitration details_
