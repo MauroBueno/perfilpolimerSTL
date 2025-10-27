@@ -258,7 +258,7 @@ END_CASE;
 
 // Read Logic for P0409 and P0410 (separate 10-second cycle)
 CASE ReadStep_P0409_P0410_rolo3 OF
-    1:
+    1:  // Read P0409 and P0410
         IF NOT ModbusBusy THEN
             ModbusBusy := TRUE;
             TargetCfg_rolo3.Addr := 409;
@@ -267,26 +267,27 @@ CASE ReadStep_P0409_P0410_rolo3 OF
             ReadMsg_P0409_P0410_rolo3(IN := TRUE, LocalCfg := LocalCfg_rolo3, TargetCfg := TargetCfg_rolo3, LocalAddr := LocalAddr_rolo3);
         END_IF;
         IF ReadMsg_P0409_P0410_rolo3.Q THEN
-            P0409_rolo3 := LocalAddr_rolo3[1];
-            P0410_rolo3 := LocalAddr_rolo3[2];
+            P0409_rolo3 := LocalAddr_rolo3[1];  // Boolean: 0 or 1 (Vector Sensorless Config 1)
+            P0410_rolo3 := LocalAddr_rolo3[2];  // Boolean: 0 or 1 (Vector Sensorless Config 2)
             TempReal_rolo3 := UINT_TO_REAL(P0409_rolo3);
-            P0409Scaled_rolo3 := TempReal_rolo3;
+            P0409Scaled_rolo3 := TempReal_rolo3; // Will be 0.0 or 1.0 for boolean display
             TempReal_rolo3 := UINT_TO_REAL(P0410_rolo3);
-            P0410Scaled_rolo3 := TempReal_rolo3;
+            P0410Scaled_rolo3 := TempReal_rolo3; // Will be 0.0 or 1.0 for boolean display
             
-            ReadStep_P0409_P0410_rolo3 := 0;
+            ReadStep_P0409_P0410_rolo3 := 0;  // Reset for next cycle
             ModbusBusy := FALSE;
-            ReadRetryCount_P0409_P0410_rolo3 := 0;
+            ReadRetryCount_P0409_P0410_rolo3 := 0; // Reset retry counter on success
         ELSIF ReadRetryCount_P0409_P0410_rolo3 < MAX_RETRIES THEN
             ReadRetryCount_P0409_P0410_rolo3 := ReadRetryCount_P0409_P0410_rolo3 + 1;
-            ModbusBusy := FALSE;
+            ModbusBusy := FALSE; // Release bus for retry
+            // Will retry on next cycle
         ELSE
-            ReadStep_P0409_P0410_rolo3 := 0;
+            ReadStep_P0409_P0410_rolo3 := 0; // Reset on max retries
             ModbusBusy := FALSE;
             ReadError_rolo3 := TRUE;
-            ReadRetryCount_P0409_P0410_rolo3 := 0;
+            ReadRetryCount_P0409_P0410_rolo3 := 0; // Reset for next operation
         END_IF;
-END_CASE;
+    END_CASE;
 
 // Verification Logic
 CASE VerificationStep_rolo3 OF

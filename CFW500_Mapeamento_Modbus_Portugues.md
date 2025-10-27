@@ -54,6 +54,23 @@ Possíveis usos comuns:
 | P0170     | 170      | Limite Mínimo de Torque         | ×0.1   | %        | UINT          | 0      | -2000-0     |
 | P0498     | 498      | Salvar Parâmetro                | 0/1    | -        | UINT          | 0      | 0-1         |
 
+### Parâmetros Adicionais de Monitoramento
+
+| Parâmetro | Registro | Tipo | Faixa | Descrição                  | Unidades | Escala | Ciclo de Leitura |
+| --------- | -------- | ---- | ----- | -------------------------- | -------- | ------ | ---------------- |
+| P0409     | 409      | UINT | 0-1   | Config Vector Sensorless 1 | -        | 1:1    | 10s              |
+| P0410     | 410      | UINT | 0-1   | Config Vector Sensorless 2 | -        | 1:1    | 10s              |
+
+**Nota sobre P0409 e P0410**:
+
+- Estes são parâmetros booleanos (0 ou 1) usados para configuração Vector Sensorless
+- **0** = Função desabilitada
+- **1** = Função habilitada
+- A função exata depende da versão de firmware do CFW500
+- Consulte o manual do CFW500 para definições específicas dos parâmetros
+- Valores armazenados como UINT mas representam estados booleanos
+- Mecanismo de retry independente para estes parâmetros
+
 ### Parâmetros Adicionais Úteis (Não Implementados Atualmente)
 
 Os seguintes parâmetros podem ser úteis para expansão futura do sistema:
@@ -103,12 +120,13 @@ Os seguintes parâmetros podem ser úteis para expansão futura do sistema:
 ### Parâmetros P0409 e P0410
 
 - **Armazenamento**: Valores brutos (UINT) e escalados (REAL) mantidos
-- **Escala**: Depende da configuração específica - consulte manual do CFW500
+- **Valores**: Booleanos - apenas 0 ou 1
+- **Função**: Parâmetros de configuração do modo Vector Sensorless
 - **Uso no Código**:
-  - `P0409_roloX`: Valor bruto do registro
-  - `P0409Scaled_roloX`: Valor após conversão UINT_TO_REAL (escala a ser aplicada conforme necessário)
-  - `P0410_roloX`: Valor bruto do registro
-  - `P0410Scaled_roloX`: Valor após conversão UINT_TO_REAL (escala a ser aplicada conforme necessário)
+  - `P0409_roloX`: Valor bruto do registro (0 ou 1)
+  - `P0409Scaled_roloX`: Valor REAL (0.0 ou 1.0) para exibição
+  - `P0410_roloX`: Valor bruto do registro (0 ou 1)
+  - `P0410Scaled_roloX`: Valor REAL (0.0 ou 1.0) para exibição
 
 ## Detalhes do Protocolo de Comunicação
 

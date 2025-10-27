@@ -117,6 +117,23 @@ Common possible uses:
 - Active/reactive power
 - Additional operational states
 
+### Additional Monitoring Parameters
+
+| Parameter | Address | Type | Range | Description                | Units | Scaling | Read Cycle |
+| --------- | ------- | ---- | ----- | -------------------------- | ----- | ------- | ---------- |
+| P0409     | 409     | UINT | 0-1   | Vector Sensorless Config 1 | -     | 1:1     | 10s        |
+| P0410     | 410     | UINT | 0-1   | Vector Sensorless Config 2 | -     | 1:1     | 10s        |
+
+**Notes on P0409 and P0410**:
+
+- These are boolean parameters (0 or 1) used for Vector Sensorless configuration
+- **0** = Feature disabled
+- **1** = Feature enabled
+- Exact function depends on CFW500 firmware version
+- Consult CFW500 manual for specific parameter definitions
+- Values stored as UINT but represent boolean states
+- Independent retry mechanism for these parameters
+
 ### Additional Useful Parameters (Not Currently Implemented)
 
 The following parameters may be useful for future system expansion:
@@ -372,6 +389,7 @@ To add new parameters to the system:
 | 2.0     | 2025-10 | Added verification cycle, retry logic, alarm monitoring                                              |
 | 2.1     | 2025-10 | Corrected timer periodicities to 10s                                                                 |
 | 2.2     | 2025-10 | Added P0409/P0410 monitoring with separate 10s cycle, list of useful parameters for future expansion |
+| 2.3     | 2025-10 | Corrected P0409/P0410 mapping and description, updated scaling information                           |
 
 ---
 

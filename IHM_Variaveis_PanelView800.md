@@ -77,35 +77,35 @@ Estas variáveis exibem valores em tempo real do processo. São somente leitura 
 
 ### Rolo 1
 
-| Variável                    | Tipo | Unidade  | Descrição                     | Taxa de Atualização | Formato Sugerido |
-| --------------------------- | ---- | -------- | ----------------------------- | ------------------- | ---------------- |
-| `TorquePercentScaled_rolo1` | REAL | %        | Torque Atual do Motor         | 10 segundos         | ##0.0            |
-| `OutputFreqScaled_rolo1`    | REAL | Hz       | Velocidade Atual (Frequência) | 10 segundos         | ##0.0            |
-| `OutputCurrentScaled_rolo1` | REAL | A        | Corrente de Saída             | 10 segundos         | ##0.0            |
-| `P0409Scaled_rolo1`         | REAL | Variável | Parâmetro Adicional 1\*       | 10 segundos         | ####0            |
-| `P0410Scaled_rolo1`         | REAL | Variável | Parâmetro Adicional 2\*       | 10 segundos         | ####0            |
+| Variável                    | Tipo | Unidade | Descrição                     | Taxa de Atualização | Formato Sugerido |
+| --------------------------- | ---- | ------- | ----------------------------- | ------------------- | ---------------- |
+| `TorquePercentScaled_rolo1` | REAL | %       | Torque Atual do Motor         | 10 segundos         | ##0.0            |
+| `OutputFreqScaled_rolo1`    | REAL | Hz      | Velocidade Atual (Frequência) | 10 segundos         | ##0.0            |
+| `OutputCurrentScaled_rolo1` | REAL | A       | Corrente de Saída             | 10 segundos         | ##0.0            |
+| `P0409Scaled_rolo1`         | REAL | -       | Config Vector Sensorless 1\*  | 10 segundos         | 0                |
+| `P0410Scaled_rolo1`         | REAL | -       | Config Vector Sensorless 2\*  | 10 segundos         | 0                |
 
-**Nota**: \*P0409 e P0410 têm função dependente da configuração do CFW500. Consulte o manual do inversor para significado específico.
+**Nota**: \*P0409 e P0410 são parâmetros booleanos (exibir como 0 ou 1) para configuração Vector Sensorless.
 
 ### Rolo 2
 
-| Variável                    | Tipo | Unidade  | Descrição                     | Taxa de Atualização | Formato Sugerido |
-| --------------------------- | ---- | -------- | ----------------------------- | ------------------- | ---------------- |
-| `TorquePercentScaled_rolo2` | REAL | %        | Torque Atual do Motor         | 10 segundos         | ##0.0            |
-| `OutputFreqScaled_rolo2`    | REAL | Hz       | Velocidade Atual (Frequência) | 10 segundos         | ##0.0            |
-| `OutputCurrentScaled_rolo2` | REAL | A        | Corrente de Saída             | 10 segundos         | ##0.0            |
-| `P0409Scaled_rolo2`         | REAL | Variável | Parâmetro Adicional 1\*       | 10 segundos         | ####0            |
-| `P0410Scaled_rolo2`         | REAL | Variável | Parâmetro Adicional 2\*       | 10 segundos         | ####0            |
+| Variável                    | Tipo | Unidade | Descrição                     | Taxa de Atualização | Formato Sugerido |
+| --------------------------- | ---- | ------- | ----------------------------- | ------------------- | ---------------- |
+| `TorquePercentScaled_rolo2` | REAL | %       | Torque Atual do Motor         | 10 segundos         | ##0.0            |
+| `OutputFreqScaled_rolo2`    | REAL | Hz      | Velocidade Atual (Frequência) | 10 segundos         | ##0.0            |
+| `OutputCurrentScaled_rolo2` | REAL | A       | Corrente de Saída             | 10 segundos         | ##0.0            |
+| `P0409Scaled_rolo2`         | REAL | -       | Config Vector Sensorless 1\*  | 10 segundos         | 0                |
+| `P0410Scaled_rolo2`         | REAL | -       | Config Vector Sensorless 2\*  | 10 segundos         | 0                |
 
 ### Rolo 3
 
-| Variável                    | Tipo | Unidade  | Descrição                     | Taxa de Atualização | Formato Sugerido |
-| --------------------------- | ---- | -------- | ----------------------------- | ------------------- | ---------------- |
-| `TorquePercentScaled_rolo3` | REAL | %        | Torque Atual do Motor         | 10 segundos         | ##0.0            |
-| `OutputFreqScaled_rolo3`    | REAL | Hz       | Velocidade Atual (Frequência) | 10 segundos         | ##0.0            |
-| `OutputCurrentScaled_rolo3` | REAL | A        | Corrente de Saída             | 10 segundos         | ##0.0            |
-| `P0409Scaled_rolo3`         | REAL | Variável | Parâmetro Adicional 1\*       | 10 segundos         | ####0            |
-| `P0410Scaled_rolo3`         | REAL | Variável | Parâmetro Adicional 2\*       | 10 segundos         | ####0            |
+| Variável                    | Tipo | Unidade | Descrição                     | Taxa de Atualização | Formato Sugerido |
+| --------------------------- | ---- | ------- | ----------------------------- | ------------------- | ---------------- |
+| `TorquePercentScaled_rolo3` | REAL | %       | Torque Atual do Motor         | 10 segundos         | ##0.0            |
+| `OutputFreqScaled_rolo3`    | REAL | Hz      | Velocidade Atual (Frequência) | 10 segundos         | ##0.0            |
+| `OutputCurrentScaled_rolo3` | REAL | A       | Corrente de Saída             | 10 segundos         | ##0.0            |
+| `P0409Scaled_rolo3`         | REAL | -       | Config Vector Sensorless 1\*  | 10 segundos         | 0                |
+| `P0410Scaled_rolo3`         | REAL | -       | Config Vector Sensorless 2\*  | 10 segundos         | 0                |
 
 **Total de Variáveis de Monitoramento**: 15
 
@@ -292,8 +292,8 @@ Cada rolo tem:
 │  │  Velocidade Atual:    45.5 Hz                            │   │
 │  │  Torque Atual:        65.2 %                             │   │
 │  │  Corrente de Saída:   12.4 A                             │   │
-│  │  Parâmetro P0409:     1234                               │   │
-│  │  Parâmetro P0410:     5678                               │   │
+│  │  Parâmetro P0409:     1   (Vector Config)               │   │
+│  │  Parâmetro P0410:     0   (Vector Config)               │   │
 │  └──────────────────────────────────────────────────────────┘   │
 │                                                                 │
 │  ─────────────────────────────────────────────────────────────  │

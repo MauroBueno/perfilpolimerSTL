@@ -154,8 +154,8 @@ Este documento contém todas as variáveis necessárias para o projeto no Connec
 | TorquePercent_rolo1 | UINT | -             | Percentual de torque        |
 | OutputFreq_rolo1    | UINT | -             | Frequência de saída (P0002) |
 | OutputCurrent_rolo1 | UINT | -             | Corrente de saída (P0003)   |
-| P0409_rolo1         | UINT | -             | Valor bruto P0409           |
-| P0410_rolo1         | UINT | -             | Valor bruto P0410           |
+| P0409_rolo1         | UINT | -             | Config Vector 1 (0 ou 1)    |
+| P0410_rolo1         | UINT | -             | Config Vector 2 (0 ou 1)    |
 
 ### Valores Escalados para Display
 
@@ -164,8 +164,8 @@ Este documento contém todas as variáveis necessárias para o projeto no Connec
 | TorquePercentScaled_rolo1 | REAL | -             | Torque percentual escalado   | %        |
 | OutputCurrentScaled_rolo1 | REAL | -             | Corrente de saída escalada   | A        |
 | OutputFreqScaled_rolo1    | REAL | -             | Frequência de saída escalada | Hz       |
-| P0409Scaled_rolo1         | REAL | -             | Valor escalado P0409         | -        |
-| P0410Scaled_rolo1         | REAL | -             | Valor escalado P0410         | -        |
+| P0409Scaled_rolo1         | REAL | -             | Config Vector 1 (0.0 ou 1.0) | -        |
+| P0410Scaled_rolo1         | REAL | -             | Config Vector 2 (0.0 ou 1.0) | -        |
 | TempReal_rolo1            | REAL | -             | Variável temporária REAL     | -        |
 
 ### Controle de Estado e Sequências
@@ -251,10 +251,10 @@ _(Mesmas variáveis que CTRLROLO1, com sufixo `_rolo3` e Node := 3)_
 
 ### Parâmetros P0409/P0410
 
-- **P0409**: Parâmetro adicional do inversor (verificar manual CFW500 para detalhes)
-- **P0410**: Parâmetro adicional do inversor (verificar manual CFW500 para detalhes)
+- **P0409**: Parâmetro de configuração Vector Sensorless (0 = Desabilitado, 1 = Habilitado)
+- **P0410**: Parâmetro de configuração Vector Sensorless (0 = Desabilitado, 1 = Habilitado)
 - Leitura separada com periodicidade de 10 segundos
-- Escalas podem variar conforme definição dos parâmetros no CFW500
+- Valores booleanos: apenas 0 ou 1
 - Valores brutos (P0409, P0410) e escalados (P0409Scaled, P0410Scaled) disponíveis
 - Sistema de retry independente para estas leituras
 

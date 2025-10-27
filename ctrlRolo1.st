@@ -291,12 +291,12 @@ CASE ReadStep_P0409_P0410_rolo1 OF
             ReadMsg_P0409_P0410_rolo1(IN := TRUE, LocalCfg := LocalCfg_rolo1, TargetCfg := TargetCfg_rolo1, LocalAddr := LocalAddr_rolo1);
         END_IF;
         IF ReadMsg_P0409_P0410_rolo1.Q THEN
-            P0409_rolo1 := LocalAddr_rolo1[1];
-            P0410_rolo1 := LocalAddr_rolo1[2];
+            P0409_rolo1 := LocalAddr_rolo1[1];  // Boolean: 0 or 1 (Vector Sensorless Config 1)
+            P0410_rolo1 := LocalAddr_rolo1[2];  // Boolean: 0 or 1 (Vector Sensorless Config 2)
             TempReal_rolo1 := UINT_TO_REAL(P0409_rolo1);
-            P0409Scaled_rolo1 := TempReal_rolo1; // Scaling depends on parameter definition
+            P0409Scaled_rolo1 := TempReal_rolo1; // Will be 0.0 or 1.0 for boolean display
             TempReal_rolo1 := UINT_TO_REAL(P0410_rolo1);
-            P0410Scaled_rolo1 := TempReal_rolo1; // Scaling depends on parameter definition
+            P0410Scaled_rolo1 := TempReal_rolo1; // Will be 0.0 or 1.0 for boolean display
             
             ReadStep_P0409_P0410_rolo1 := 0;  // Reset for next cycle
             ModbusBusy := FALSE;
