@@ -225,9 +225,8 @@ STEP 2: Escreve P0169 (Torque Máximo)
   ↓
 STEP 3: Escreve P0170 (Torque Mínimo)
   ↓
-STEP 4: Escreve P0498 (Salvar)
-  ↓
 FIM: Reset triggers, volta ao STEP 0
+     (Parâmetros salvos automaticamente pelo CFW500)
 ```
 
 ### Ciclo de Leitura (A cada 10s)
@@ -327,9 +326,11 @@ FIM: Volta ao STEP 0, aguarda próximo timer
 | P0134     | 134      | Velocidade Máxima   | R/W    | ×0.01 Hz |
 | P0169     | 169      | Torque Máximo       | R/W    | ×0.1 %   |
 | P0170     | 170      | Torque Mínimo       | R/W    | ×0.1 %   |
-| P0409     | 409      | Config Vector 1     | R      | 0/1      |
-| P0410     | 410      | Config Vector 2     | R      | 0/1      |
-| P0498     | 498      | Salvar Parâmetros   | R/W    | 0/1      |
+| P0408     | 408      | Autosintonia Enable | R      | 0/1      |
+| P0409     | 409      | Resistência Rs      | R      | ×0.01 Ω  |
+| P0410     | 410      | Corrente Mag. Im    | R      | ×0.01 A  |
+
+**Nota**: Parâmetros escritos via Modbus são automaticamente salvos na EEPROM do CFW500.
 
 ### Códigos de Função Modbus
 
@@ -603,12 +604,13 @@ Este projeto representa uma solução completa e profissional para controle indu
 
 ### Destaques Finais
 
-- **~1.350 linhas** de código ST de alta qualidade
+- **~1.300 linhas** de código ST de alta qualidade (reduzido após remoção de P0498)
 - **~80 páginas** de documentação técnica
-- **45 variáveis** por rolo para controle total
+- **48 variáveis** vinculadas no IHM para controle total
 - **4 ciclos** independentes para máxima eficiência
 - **Retry automático** para confiabilidade
 - **Alarmes inteligentes** para operação segura
+- **Salvamento automático** de parâmetros pelo inversor
 
 ---
 

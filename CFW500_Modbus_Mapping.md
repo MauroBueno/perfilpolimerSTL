@@ -75,22 +75,6 @@ CFW500 uses a direct mapping where parameter Pxxxx corresponds to Modbus holding
 - Project limits: 0-200% (validated before writing)
 - P0170 typically set to 0 in this application
 
-### Enable/Disable Parameter
-
-| Parameter | Address | Type | Range | Description             | Units |
-| --------- | ------- | ---- | ----- | ----------------------- | ----- |
-| P0498     | 498     | UINT | 0-1   | Parameter Change Enable | -     |
-
-**Values**:
-
-- 0 = Parameter changes disabled
-- 1 = Parameter changes enabled
-
-**Notes**:
-
-- Must be set to 1 before modifying drive parameters
-- Automatically handled by verification logic
-
 ## Monitoring Parameters
 
 ### Real-time Operating Data
@@ -151,18 +135,18 @@ The following parameters may be useful for future system expansion:
 
 ## Parameter Access Sequence
 
-### Write Sequence (On HMI Change)
+#### Write Sequence (On HMI Change or WriteTrigger)
 
 1. **Step 0**: Write P0134 (Max Speed)
 2. **Step 1**: Write P0133 (Min Speed)
 3. **Step 2**: Write P0169 (Max Torque)
 4. **Step 3**: Write P0170 (Min Torque)
-5. **Step 4**: Write P0498 (Enable/Disable)
 
 **Notes**:
 
 - Sequential execution with retry logic (max 3 attempts)
-- Only triggered when HMI values change
+- Only triggered when HMI values change or operator presses "Apply"
+- Parameters are automatically saved by CFW500 upon write
 - Avoids unnecessary writes to inverter
 
 ### Read Sequence (Every 10 seconds)

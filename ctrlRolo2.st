@@ -84,14 +84,13 @@ IF WriteNeeded_rolo2 OR WriteTrigger_rolo2 THEN
         IF WriteMsg_rolo2.Q THEN
                 WriteStep_rolo2 := 1;
                 MaxSpeedRead_rolo2 := LocalAddr_rolo2[1];
-                WriteRetryCount_rolo2 := 0; // Reset retry counter on success
+                WriteRetryCount_rolo2 := 0;
         ELSIF WriteRetryCount_rolo2 < MAX_RETRIES THEN
                 WriteRetryCount_rolo2 := WriteRetryCount_rolo2 + 1;
-                // Retry the same operation
         ELSE
-                WriteStep_rolo2 := 1; // Advance on max retries reached
+                WriteStep_rolo2 := 1;
                 WriteError_rolo2 := TRUE;
-                WriteRetryCount_rolo2 := 0; // Reset for next operation
+                WriteRetryCount_rolo2 := 0;
         END_IF;
             1:
             LocalAddr_rolo2[1] := MinSpeedSet_rolo2;
@@ -102,14 +101,13 @@ IF WriteNeeded_rolo2 OR WriteTrigger_rolo2 THEN
         IF WriteMsg_rolo2.Q THEN
                 WriteStep_rolo2 := 2;
                 MinSpeedRead_rolo2 := LocalAddr_rolo2[1];
-                WriteRetryCount_rolo2 := 0; // Reset retry counter on success
+                WriteRetryCount_rolo2 := 0;
         ELSIF WriteRetryCount_rolo2 < MAX_RETRIES THEN
                 WriteRetryCount_rolo2 := WriteRetryCount_rolo2 + 1;
-                // Retry the same operation
         ELSE
-                WriteStep_rolo2 := 2; // Advance on max retries reached
+                WriteStep_rolo2 := 2;
                 WriteError_rolo2 := TRUE;
-                WriteRetryCount_rolo2 := 0; // Reset for next operation
+                WriteRetryCount_rolo2 := 0;
         END_IF;
             2:
             LocalAddr_rolo2[1] := MaxTorqueSet_rolo2;
@@ -120,14 +118,13 @@ IF WriteNeeded_rolo2 OR WriteTrigger_rolo2 THEN
         IF WriteMsg_rolo2.Q THEN
                 WriteStep_rolo2 := 3;
                 MaxTorqueRead_rolo2 := LocalAddr_rolo2[1];
-                WriteRetryCount_rolo2 := 0; // Reset retry counter on success
+                WriteRetryCount_rolo2 := 0;
         ELSIF WriteRetryCount_rolo2 < MAX_RETRIES THEN
                 WriteRetryCount_rolo2 := WriteRetryCount_rolo2 + 1;
-                // Retry the same operation
         ELSE
-                WriteStep_rolo2 := 3; // Advance on max retries reached
+                WriteStep_rolo2 := 3;
                 WriteError_rolo2 := TRUE;
-                WriteRetryCount_rolo2 := 0; // Reset for next operation
+                WriteRetryCount_rolo2 := 0;
         END_IF;
             3:
             LocalAddr_rolo2[1] := MinTorqueSet_rolo2;
@@ -136,48 +133,19 @@ IF WriteNeeded_rolo2 OR WriteTrigger_rolo2 THEN
             LocalCfg_rolo2.ElementCnt := 1;
             WriteMsg_rolo2(IN := TRUE, LocalCfg := LocalCfg_rolo2, TargetCfg := TargetCfg_rolo2, LocalAddr := LocalAddr_rolo2);
         IF WriteMsg_rolo2.Q THEN
-                WriteStep_rolo2 := 4;
+                WriteStep_rolo2 := 0;  // Reset - Write sequence complete
                 MinTorqueRead_rolo2 := LocalAddr_rolo2[1];
-                WriteRetryCount_rolo2 := 0; // Reset retry counter on success
-        ELSIF WriteRetryCount_rolo2 < MAX_RETRIES THEN
-                WriteRetryCount_rolo2 := WriteRetryCount_rolo2 + 1;
-                // Retry the same operation
-        ELSE
-                WriteStep_rolo2 := 4; // Advance on max retries reached
-                WriteError_rolo2 := TRUE;
-                WriteRetryCount_rolo2 := 0; // Reset for next operation
-        END_IF;
-            4:
-            // P0498 is boolean: TRUE = 1 (save), FALSE = 0 (don't save)
-            IF P0498Set_rolo2 THEN
-                LocalAddr_rolo2[1] := 1;
-            ELSE
-                LocalAddr_rolo2[1] := 0;
-            END_IF;
-            TargetCfg_rolo2.Addr := 498;
-            LocalCfg_rolo2.Cmd := 6;
-            LocalCfg_rolo2.ElementCnt := 1;
-            WriteMsg_rolo2(IN := TRUE, LocalCfg := LocalCfg_rolo2, TargetCfg := TargetCfg_rolo2, LocalAddr := LocalAddr_rolo2);
-        IF WriteMsg_rolo2.Q THEN
-                WriteStep_rolo2 := 0;
-                // Convert UINT response back to BOOL
-                IF LocalAddr_rolo2[1] = 1 THEN
-                    P0498Read_rolo2 := TRUE;
-                ELSE
-                    P0498Read_rolo2 := FALSE;
-                END_IF;
                 WriteTrigger_rolo2 := FALSE;
                 WriteNeeded_rolo2 := FALSE;
-                WriteRetryCount_rolo2 := 0; // Reset retry counter on success
+                WriteRetryCount_rolo2 := 0;
         ELSIF WriteRetryCount_rolo2 < MAX_RETRIES THEN
                 WriteRetryCount_rolo2 := WriteRetryCount_rolo2 + 1;
-                // Retry the same operation
         ELSE
-                WriteStep_rolo2 := 0; // Reset on max retries reached
+                WriteStep_rolo2 := 0;  // Reset on max retries
                 WriteTrigger_rolo2 := FALSE;
                 WriteNeeded_rolo2 := FALSE;
                 WriteError_rolo2 := TRUE;
-                WriteRetryCount_rolo2 := 0; // Reset for next operation
+                WriteRetryCount_rolo2 := 0;
         END_IF;
     END_CASE;
 END_IF;

@@ -134,42 +134,15 @@ IF WriteNeeded_rolo1 OR WriteTrigger_rolo1 THEN
             LocalCfg_rolo1.ElementCnt := 1;
             WriteMsg_rolo1(IN := TRUE, LocalCfg := LocalCfg_rolo1, TargetCfg := TargetCfg_rolo1, LocalAddr := LocalAddr_rolo1);
             IF WriteMsg_rolo1.Q THEN
-                WriteStep_rolo1 := 4;
+                WriteStep_rolo1 := 0;  // Reset - Write sequence complete
                 MinTorqueRead_rolo1 := LocalAddr_rolo1[1];
-                WriteRetryCount_rolo1 := 0;
-            ELSIF WriteRetryCount_rolo1 < MAX_RETRIES THEN
-                WriteRetryCount_rolo1 := WriteRetryCount_rolo1 + 1;
-            ELSE
-                WriteStep_rolo1 := 4;
-                WriteError_rolo1 := TRUE;
-                WriteRetryCount_rolo1 := 0;
-            END_IF;
-        4:
-            // P0498 is boolean: TRUE = 1 (save), FALSE = 0 (don't save)
-            IF P0498Set_rolo1 THEN
-                LocalAddr_rolo1[1] := 1;
-            ELSE
-                LocalAddr_rolo1[1] := 0;
-            END_IF;
-            TargetCfg_rolo1.Addr := 498;
-            LocalCfg_rolo1.Cmd := 6;
-            LocalCfg_rolo1.ElementCnt := 1;
-            WriteMsg_rolo1(IN := TRUE, LocalCfg := LocalCfg_rolo1, TargetCfg := TargetCfg_rolo1, LocalAddr := LocalAddr_rolo1);
-            IF WriteMsg_rolo1.Q THEN
-                WriteStep_rolo1 := 0;
-                // Convert UINT response back to BOOL
-                IF LocalAddr_rolo1[1] = 1 THEN
-                    P0498Read_rolo1 := TRUE;
-                ELSE
-                    P0498Read_rolo1 := FALSE;
-                END_IF;
                 WriteTrigger_rolo1 := FALSE;
                 WriteNeeded_rolo1 := FALSE;
                 WriteRetryCount_rolo1 := 0;
             ELSIF WriteRetryCount_rolo1 < MAX_RETRIES THEN
                 WriteRetryCount_rolo1 := WriteRetryCount_rolo1 + 1;
             ELSE
-                WriteStep_rolo1 := 0;
+                WriteStep_rolo1 := 0;  // Reset on max retries
                 WriteTrigger_rolo1 := FALSE;
                 WriteNeeded_rolo1 := FALSE;
                 WriteError_rolo1 := TRUE;

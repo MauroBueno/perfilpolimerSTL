@@ -52,14 +52,8 @@ Possíveis usos comuns:
 | P0134     | 134      | UINT | 0-60000 | Referência de Velocidade Máxima | ×0.01 Hz | 6000   | VelMin-6500 |
 | P0169     | 169      | UINT | 0-2000  | Limite Máximo de Torque         | ×0.1%    | 1500   | 0-2000      |
 | P0170     | 170      | UINT | -2000-0 | Limite Mínimo de Torque         | ×0.1%    | 0      | -2000-0     |
-| P0408     | 408      | BOOL | 0-1     | Habilitar Vector Sensorless     | -        | 1      | 0-1         |
-| P0498     | 498      | BOOL | 0-1     | Salvar Parâmetros               | -        | 0      | 0-1         |
 
-**Notas sobre Parâmetros Booleanos**:
-
-- **P0408**: 0 = Modo vetorial desabilitado, 1 = Modo vetorial habilitado
-- **P0498**: 0 = Não salvar, 1 = Salvar parâmetros na EEPROM
-- Estes são transmitidos como UINT (0 ou 1) via Modbus mas representados como BOOL no código
+**Nota**: Parâmetros escritos via Modbus são automaticamente salvos na EEPROM pelo CFW500. Nenhum comando explícito de salvar é necessário.
 
 ### Parâmetros Adicionais de Monitoramento
 

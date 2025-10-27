@@ -129,23 +129,21 @@ Este documento contém todas as variáveis necessárias para o projeto no Connec
 
 ### Setpoints Calculados
 
-| Variável           | Tipo | Valor Inicial | Descrição                            |
-| ------------------ | ---- | ------------- | ------------------------------------ |
-| MaxSpeedSet_rolo1  | UINT | -             | Velocidade máxima configurada        |
-| MinSpeedSet_rolo1  | UINT | -             | Velocidade mínima configurada        |
-| MaxTorqueSet_rolo1 | UINT | -             | Torque máximo configurado            |
-| MinTorqueSet_rolo1 | UINT | -             | Torque mínimo configurado            |
-| P0498Set_rolo1     | BOOL | FALSE         | Comando para salvar parâmetros (0/1) |
+| Variável           | Tipo | Valor Inicial | Descrição                     |
+| ------------------ | ---- | ------------- | ----------------------------- |
+| MaxSpeedSet_rolo1  | UINT | -             | Velocidade máxima configurada |
+| MinSpeedSet_rolo1  | UINT | -             | Velocidade mínima configurada |
+| MaxTorqueSet_rolo1 | UINT | -             | Torque máximo configurado     |
+| MinTorqueSet_rolo1 | UINT | -             | Torque mínimo configurado     |
 
 ### Valores Lidos do Drive
 
-| Variável            | Tipo | Valor Inicial | Descrição                           |
-| ------------------- | ---- | ------------- | ----------------------------------- |
-| MaxSpeedRead_rolo1  | UINT | -             | Velocidade máxima lida              |
-| MinSpeedRead_rolo1  | UINT | -             | Velocidade mínima lida              |
-| MaxTorqueRead_rolo1 | UINT | -             | Torque máximo lido                  |
-| MinTorqueRead_rolo1 | UINT | -             | Torque mínimo lido                  |
-| P0498Read_rolo1     | BOOL | FALSE         | Status salvar parâmetros lido (0/1) |
+| Variável            | Tipo | Valor Inicial | Descrição              |
+| ------------------- | ---- | ------------- | ---------------------- |
+| MaxSpeedRead_rolo1  | UINT | -             | Velocidade máxima lida |
+| MinSpeedRead_rolo1  | UINT | -             | Velocidade mínima lida |
+| MaxTorqueRead_rolo1 | UINT | -             | Torque máximo lido     |
+| MinTorqueRead_rolo1 | UINT | -             | Torque mínimo lido     |
 
 ### Valores de Monitoramento (RAW)
 
@@ -244,6 +242,8 @@ _(Mesmas variáveis que CTRLROLO1, com sufixo `_rolo3` e Node := 3)_
 - Apenas escreve parâmetros quando valores do HMI mudam
 - Evita escritas desnecessárias no equipamento
 - Sistema de retry com até 3 tentativas por operação
+- **Parâmetros são salvos automaticamente** pelo CFW500 ao serem escritos via Modbus
+- Sequência de escrita: P0134 → P0133 → P0169 → P0170 (4 passos)
 
 ### Sistema de Alarmes
 
@@ -266,7 +266,7 @@ _(Mesmas variáveis que CTRLROLO1, com sufixo `_rolo3` e Node := 3)_
 
 - Todas as operações Modbus são sequenciais usando flag `ModbusBusy`
 - Quatro ciclos independentes:
-  1. **Write Cycle**: Escrita de parâmetros (sob demanda)
+  1. **Write Cycle**: Escrita de parâmetros (sob demanda) - 4 steps
   2. **Read Cycle**: Leitura de monitoramento a cada 10s (P0009, P0002, P0003)
   3. **Verification Cycle**: Verificação e correção de parâmetros críticos a cada 10s
   4. **P0408/P0409/P0410 Read Cycle**: Leitura de parâmetros Vector a cada 10s
