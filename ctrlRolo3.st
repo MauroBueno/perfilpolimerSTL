@@ -16,11 +16,11 @@ IF ReadTimer_rolo3.Q THEN
     ReadTimer_rolo3(IN := FALSE);
 END_IF;
 
-// Periodic Read Timer for P0409/P0410 (every 10s)
-ReadTimer_P0409_P0410_rolo3(IN := TRUE, PT := T#10s);
-IF ReadTimer_P0409_P0410_rolo3.Q THEN
-    ReadStep_P0409_P0410_rolo3 := 1;
-    ReadTimer_P0409_P0410_rolo3(IN := FALSE);
+// Periodic Read Timer for P0408/P0409/P0410 (every 10s)
+ReadTimer_P0408_P0410_rolo3(IN := TRUE, PT := T#10s);
+IF ReadTimer_P0408_P0410_rolo3.Q THEN
+    ReadStep_P0408_P0410_rolo3 := 1;  // Start P0408/P0409/P0410 read sequence
+    ReadTimer_P0408_P0410_rolo3(IN := FALSE); // Reset to restart timer
 END_IF;
 
 // Detect changes in HMI values and compare with drive values to set write flag
@@ -162,7 +162,7 @@ ELSIF WriteRetryCount_rolo3 >= MAX_RETRIES THEN
     CommunicationOK_rolo3 := FALSE;
 END_IF;
 
-IF ReadMsg_P0009_rolo3.Q OR ReadMsg_P0002_P0003_rolo3.Q OR ReadMsg_P0409_P0410_rolo3.Q THEN
+IF ReadMsg_P0009_rolo3.Q OR ReadMsg_P0002_P0003_rolo3.Q OR ReadMsg_P0408_P0410_rolo3.Q THEN
     ReadError_rolo3 := FALSE;
     CommunicationOK_rolo3 := TRUE;
 END_IF;
@@ -256,36 +256,45 @@ CASE ReadStep_rolo3 OF
         END_IF;
 END_CASE;
 
-// Read Logic for P0409 and P0410 (separate 10-second cycle)
-CASE ReadStep_P0409_P0410_rolo3 OF
-    1:  // Read P0409 and P0410
+// Read Logic for P0408, P0409 and P0410 (separate 10-second cycle)
+CASE ReadStep_P0408_P0410_rolo3 OF
+    1:  // Read P0408, P0409 and P0410
         IF NOT ModbusBusy THEN
             ModbusBusy := TRUE;
-            TargetCfg_rolo3.Addr := 409;
+            TargetCfg_rolo3.Addr := 408;
             LocalCfg_rolo3.Cmd := 3;
-            LocalCfg_rolo3.ElementCnt := 2;
-            ReadMsg_P0409_P0410_rolo3(IN := TRUE, LocalCfg := LocalCfg_rolo3, TargetCfg := TargetCfg_rolo3, LocalAddr := LocalAddr_rolo3);
+            LocalCfg_rolo3.ElementCnt := 3;
+            ReadMsg_P0408_P0410_rolo3(IN := TRUE, LocalCfg := LocalCfg_rolo3, TargetCfg := TargetCfg_rolo3, LocalAddr := LocalAddr_rolo3);
         END_IF;
-        IF ReadMsg_P0409_P0410_rolo3.Q THEN
-            P0409_rolo3 := LocalAddr_rolo3[1];  // Boolean: 0 or 1 (Vector Sensorless Config 1)
-            P0410_rolo3 := LocalAddr_rolo3[2];  // Boolean: 0 or 1 (Vector Sensorless Config 2)
-            TempReal_rolo3 := UINT_TO_REAL(P0409_rolo3);
-            P0409Scaled_rolo3 := TempReal_rolo3; // Will be 0.0 or 1.0 for boolean display
-            TempReal_rolo3 := UINT_TO_REAL(P0410_rolo3);
-            P0410Scaled_rolo3 := TempReal_rolo3; // Will be 0.0 or 1.0 for boolean display
+        IF ReadMsg_P0408_P0410_rolo3.Q THEN
+            P0408_rolo3 := LocalAddr_rolo3[1];  // Boolean: 0 or 1 (Vector Sensorless Enable)
+            P0409_rolo3 := LocalAddr_rolo3[2];  // Stator Resistance (Rs) in ohms
+            P0410_rolo3 := LocalAddr_rolo3[3];  // Magnetizing Current (Im) in amperes
             
-            ReadStep_P0409_P0410_rolo3 := 0;  // Reset for next cycle
+            // Scale P0408 (Boolean)
+            TempReal_rolo3 := UINT_TO_REAL(P0408_rolo3);
+            P0408Scaled_rolo3 := TempReal_rolo3; // Will be 0.0 or 1.0 for boolean display
+            
+            // Scale P0409 (Stator Resistance in 0.01 ohm units)
+            TempReal_rolo3 := UINT_TO_REAL(P0409_rolo3);
+            P0409Scaled_rolo3 := TempReal_rolo3 / 100.0; // Convert to ohms
+            
+            // Scale P0410 (Magnetizing Current in 0.01 A units)
+            TempReal_rolo3 := UINT_TO_REAL(P0410_rolo3);
+            P0410Scaled_rolo3 := TempReal_rolo3 / 100.0; // Convert to amperes
+            
+            ReadStep_P0408_P0410_rolo3 := 0;  // Reset for next cycle
             ModbusBusy := FALSE;
-            ReadRetryCount_P0409_P0410_rolo3 := 0; // Reset retry counter on success
-        ELSIF ReadRetryCount_P0409_P0410_rolo3 < MAX_RETRIES THEN
-            ReadRetryCount_P0409_P0410_rolo3 := ReadRetryCount_P0409_P0410_rolo3 + 1;
+            ReadRetryCount_P0408_P0410_rolo3 := 0; // Reset retry counter on success
+        ELSIF ReadRetryCount_P0408_P0410_rolo3 < MAX_RETRIES THEN
+            ReadRetryCount_P0408_P0410_rolo3 := ReadRetryCount_P0408_P0410_rolo3 + 1;
             ModbusBusy := FALSE; // Release bus for retry
             // Will retry on next cycle
         ELSE
-            ReadStep_P0409_P0410_rolo3 := 0; // Reset on max retries
+            ReadStep_P0408_P0410_rolo3 := 0; // Reset on max retries
             ModbusBusy := FALSE;
             ReadError_rolo3 := TRUE;
-            ReadRetryCount_P0409_P0410_rolo3 := 0; // Reset for next operation
+            ReadRetryCount_P0408_P0410_rolo3 := 0; // Reset for next operation
         END_IF;
     END_CASE;
 
