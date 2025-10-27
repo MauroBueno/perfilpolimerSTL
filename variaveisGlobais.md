@@ -129,23 +129,23 @@ Este documento contém todas as variáveis necessárias para o projeto no Connec
 
 ### Setpoints Calculados
 
-| Variável           | Tipo | Valor Inicial | Descrição                     |
-| ------------------ | ---- | ------------- | ----------------------------- |
-| MaxSpeedSet_rolo1  | UINT | -             | Velocidade máxima configurada |
-| MinSpeedSet_rolo1  | UINT | -             | Velocidade mínima configurada |
-| MaxTorqueSet_rolo1 | UINT | -             | Torque máximo configurado     |
-| MinTorqueSet_rolo1 | UINT | -             | Torque mínimo configurado     |
-| P0498Set_rolo1     | UINT | -             | Configuração P0498            |
+| Variável           | Tipo | Valor Inicial | Descrição                            |
+| ------------------ | ---- | ------------- | ------------------------------------ |
+| MaxSpeedSet_rolo1  | UINT | -             | Velocidade máxima configurada        |
+| MinSpeedSet_rolo1  | UINT | -             | Velocidade mínima configurada        |
+| MaxTorqueSet_rolo1 | UINT | -             | Torque máximo configurado            |
+| MinTorqueSet_rolo1 | UINT | -             | Torque mínimo configurado            |
+| P0498Set_rolo1     | BOOL | FALSE         | Comando para salvar parâmetros (0/1) |
 
 ### Valores Lidos do Drive
 
-| Variável            | Tipo | Valor Inicial | Descrição              |
-| ------------------- | ---- | ------------- | ---------------------- |
-| MaxSpeedRead_rolo1  | UINT | -             | Velocidade máxima lida |
-| MinSpeedRead_rolo1  | UINT | -             | Velocidade mínima lida |
-| MaxTorqueRead_rolo1 | UINT | -             | Torque máximo lido     |
-| MinTorqueRead_rolo1 | UINT | -             | Torque mínimo lido     |
-| P0498Read_rolo1     | UINT | -             | P0498 lido             |
+| Variável            | Tipo | Valor Inicial | Descrição                           |
+| ------------------- | ---- | ------------- | ----------------------------------- |
+| MaxSpeedRead_rolo1  | UINT | -             | Velocidade máxima lida              |
+| MinSpeedRead_rolo1  | UINT | -             | Velocidade mínima lida              |
+| MaxTorqueRead_rolo1 | UINT | -             | Torque máximo lido                  |
+| MinTorqueRead_rolo1 | UINT | -             | Torque mínimo lido                  |
+| P0498Read_rolo1     | BOOL | FALSE         | Status salvar parâmetros lido (0/1) |
 
 ### Valores de Monitoramento (RAW)
 

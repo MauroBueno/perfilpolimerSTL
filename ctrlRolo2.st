@@ -148,14 +148,24 @@ IF WriteNeeded_rolo2 OR WriteTrigger_rolo2 THEN
                 WriteRetryCount_rolo2 := 0; // Reset for next operation
         END_IF;
             4:
-            LocalAddr_rolo2[1] := P0498Set_rolo2;
+            // P0498 is boolean: TRUE = 1 (save), FALSE = 0 (don't save)
+            IF P0498Set_rolo2 THEN
+                LocalAddr_rolo2[1] := 1;
+            ELSE
+                LocalAddr_rolo2[1] := 0;
+            END_IF;
             TargetCfg_rolo2.Addr := 498;
             LocalCfg_rolo2.Cmd := 6;
             LocalCfg_rolo2.ElementCnt := 1;
             WriteMsg_rolo2(IN := TRUE, LocalCfg := LocalCfg_rolo2, TargetCfg := TargetCfg_rolo2, LocalAddr := LocalAddr_rolo2);
         IF WriteMsg_rolo2.Q THEN
                 WriteStep_rolo2 := 0;
-                P0498Read_rolo2 := LocalAddr_rolo2[1];
+                // Convert UINT response back to BOOL
+                IF LocalAddr_rolo2[1] = 1 THEN
+                    P0498Read_rolo2 := TRUE;
+                ELSE
+                    P0498Read_rolo2 := FALSE;
+                END_IF;
                 WriteTrigger_rolo2 := FALSE;
                 WriteNeeded_rolo2 := FALSE;
                 WriteRetryCount_rolo2 := 0; // Reset retry counter on success
@@ -170,6 +180,7 @@ IF WriteNeeded_rolo2 OR WriteTrigger_rolo2 THEN
                 WriteRetryCount_rolo2 := 0; // Reset for next operation
         END_IF;
     END_CASE;
+END_IF;
 
 // Lógica para flags de erro e status
 IF WriteMsg_rolo2.Q THEN

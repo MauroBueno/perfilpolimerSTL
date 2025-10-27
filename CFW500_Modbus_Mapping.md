@@ -390,6 +390,7 @@ To add new parameters to the system:
 | 2.1     | 2025-10 | Corrected timer periodicities to 10s                                                                 |
 | 2.2     | 2025-10 | Added P0409/P0410 monitoring with separate 10s cycle, list of useful parameters for future expansion |
 | 2.3     | 2025-10 | Corrected P0409/P0410 mapping and description, updated scaling information                           |
+| 2.4     | 2025-10 | Updated control parameters table with default values and ranges                                      |
 
 ---
 

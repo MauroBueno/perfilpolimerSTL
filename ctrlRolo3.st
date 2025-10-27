@@ -130,14 +130,24 @@ IF WriteNeeded_rolo3 OR WriteTrigger_rolo3 THEN
                 WriteRetryCount_rolo3 := 0;
             END_IF;
         4:
-            LocalAddr_rolo3[1] := P0498Set_rolo3;
+            // P0498 is boolean: TRUE = 1 (save), FALSE = 0 (don't save)
+            IF P0498Set_rolo3 THEN
+                LocalAddr_rolo3[1] := 1;
+            ELSE
+                LocalAddr_rolo3[1] := 0;
+            END_IF;
             TargetCfg_rolo3.Addr := 498;
             LocalCfg_rolo3.Cmd := 6;
             LocalCfg_rolo3.ElementCnt := 1;
             WriteMsg_rolo3(IN := TRUE, LocalCfg := LocalCfg_rolo3, TargetCfg := TargetCfg_rolo3, LocalAddr := LocalAddr_rolo3);
             IF WriteMsg_rolo3.Q THEN
                 WriteStep_rolo3 := 0;
-                P0498Read_rolo3 := LocalAddr_rolo3[1];
+                // Convert UINT response back to BOOL
+                IF LocalAddr_rolo3[1] = 1 THEN
+                    P0498Read_rolo3 := TRUE;
+                ELSE
+                    P0498Read_rolo3 := FALSE;
+                END_IF;
                 WriteTrigger_rolo3 := FALSE;
                 WriteNeeded_rolo3 := FALSE;
                 WriteRetryCount_rolo3 := 0;

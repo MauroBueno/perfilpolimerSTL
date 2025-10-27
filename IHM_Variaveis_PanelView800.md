@@ -187,7 +187,21 @@ Botões e comandos que o operador pode acionar.
 | `WriteTrigger_rolo3` | BOOL | Forçar Escrita Imediata dos Parâmetros | Set momentâneo (pulso) | Push Button   |
 | `EnableDrive_rolo3`  | BOOL | Habilitar/Desabilitar Drive            | Toggle (liga/desliga)  | Toggle Button |
 
-**Total de Variáveis de Controle**: 6
+#### Para Cada Rolo (1, 2, 3):
+
+| Variável             | Tipo | Descrição                              | Ação                   | Tipo de Botão |
+| -------------------- | ---- | -------------------------------------- | ---------------------- | ------------- |
+| `WriteTrigger_roloX` | BOOL | Forçar Escrita Imediata dos Parâmetros | Set momentâneo (pulso) | Push Button   |
+| `EnableDrive_roloX`  | BOOL | Habilitar/Desabilitar Drive            | Toggle (liga/desliga)  | Toggle Button |
+| `P0498Set_roloX`     | BOOL | Comando Salvar Parâmetros no Inversor  | Set momentâneo (pulso) | Push Button   |
+
+**Comportamento**:
+
+- **WriteTrigger**: Quando pressionado, força escrita imediata de todos os parâmetros. Auto-reset após escrita.
+- **EnableDrive**: Alterna entre habilitar e desabilitar o motor do rolo.
+- **P0498Set**: Quando pressionado (TRUE), envia comando para salvar parâmetros na EEPROM do inversor. Deve ser usado após alterações de configuração.
+
+**Total de Variáveis de Controle**: 9 (3 por rolo)
 
 ---
 

@@ -45,14 +45,21 @@ Possíveis usos comuns:
 
 ### Parâmetros de Controle (Leitura/Escrita)
 
-| Parâmetro | Registro | Descrição                       | Escala | Unidades | Tipo de Dados | Padrão | Faixa       |
-| --------- | -------- | ------------------------------- | ------ | -------- | ------------- | ------ | ----------- |
-| P0100     | 100      | Tipo de Controle                | 1:1    | -        | UINT          | 2      | 0-5         |
-| P0133     | 133      | Referência de Velocidade Mínima | ×0.01  | Hz       | UINT          | 0      | 0-VelMax    |
-| P0134     | 134      | Referência de Velocidade Máxima | ×0.01  | Hz       | UINT          | 6000   | VelMin-6500 |
-| P0169     | 169      | Limite Máximo de Torque         | ×0.1   | %        | UINT          | 1500   | 0-2000      |
-| P0170     | 170      | Limite Mínimo de Torque         | ×0.1   | %        | UINT          | 0      | -2000-0     |
-| P0498     | 498      | Salvar Parâmetro                | 0/1    | -        | UINT          | 0      | 0-1         |
+| Parâmetro | Registro | Tipo | Faixa   | Descrição                       | Escala   | Padrão | Faixa       |
+| --------- | -------- | ---- | ------- | ------------------------------- | -------- | ------ | ----------- |
+| P0100     | 100      | UINT | 0-5     | Tipo de Controle                | 1:1      | 2      | 0-5         |
+| P0133     | 133      | UINT | 0-60000 | Referência de Velocidade Mínima | ×0.01 Hz | 0      | 0-VelMax    |
+| P0134     | 134      | UINT | 0-60000 | Referência de Velocidade Máxima | ×0.01 Hz | 6000   | VelMin-6500 |
+| P0169     | 169      | UINT | 0-2000  | Limite Máximo de Torque         | ×0.1%    | 1500   | 0-2000      |
+| P0170     | 170      | UINT | -2000-0 | Limite Mínimo de Torque         | ×0.1%    | 0      | -2000-0     |
+| P0408     | 408      | BOOL | 0-1     | Habilitar Vector Sensorless     | -        | 1      | 0-1         |
+| P0498     | 498      | BOOL | 0-1     | Salvar Parâmetros               | -        | 0      | 0-1         |
+
+**Notas sobre Parâmetros Booleanos**:
+
+- **P0408**: 0 = Modo vetorial desabilitado, 1 = Modo vetorial habilitado
+- **P0498**: 0 = Não salvar, 1 = Salvar parâmetros na EEPROM
+- Estes são transmitidos como UINT (0 ou 1) via Modbus mas representados como BOOL no código
 
 ### Parâmetros Adicionais de Monitoramento
 
