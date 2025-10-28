@@ -39,35 +39,42 @@ Estas são as variáveis que o operador pode ajustar através do IHM. Valores s�
 
 ### Rolo 1
 
-| Variável          | Tipo | Unidade | Descrição              | Faixa Válida | Valor Padrão | Incremento Sugerido |
-| ----------------- | ---- | ------- | ---------------------- | ------------ | ------------ | ------------------- |
-| `SpeedMax_rolo1`  | REAL | Hz      | Velocidade Máxima      | 0.0 - 100.0  | 60.0         | 0.1                 |
-| `SpeedMin_rolo1`  | REAL | Hz      | Velocidade Mínima      | 0.0 - 100.0  | 0.0          | 0.1                 |
-| `TorqueMax_rolo1` | REAL | %       | Torque Máximo (Limite) | 0.0 - 200.0  | 100.0        | 1.0                 |
+| Variável                 | Tipo | Unidade | Descrição                      | Faixa Válida | Valor Padrão | Incremento Sugerido |
+| ------------------------ | ---- | ------- | ------------------------------ | ------------ | ------------ | ------------------- |
+| `SpeedMax_rolo1`         | REAL | Hz      | Velocidade Máxima              | 0.0 - 100.0  | 60.0         | 0.1                 |
+| `SpeedMin_rolo1`         | REAL | Hz      | Velocidade Mínima              | 0.0 - 100.0  | 0.0          | 0.1                 |
+| `TorqueMax_rolo1`        | REAL | %       | Torque Máximo (Limite)         | 0.0 - 200.0  | 100.0        | 1.0                 |
+| `SpeedTorqueRatio_rolo1` | REAL | Hz/%    | Razão Alarme Velocidade/Torque | 0.1 - 2.0    | 0.5          | 0.05                |
 
 **Notas**:
 
 - `SpeedMin` deve ser sempre ≤ `SpeedMax`
+- `SpeedTorqueRatio` define o limiar do alarme: Velocidade_Mínima_Esperada = Torque × Razão
+- Valores típicos de SpeedTorqueRatio:
+  - 0.3-0.4: Motores com alta inércia ou cargas pesadas
+  - 0.5: Configuração padrão balanceada
+  - 0.6-0.8: Motores com baixa inércia ou cargas leves
 - Validação automática no CLP limita valores fora da faixa
-- Valores são convertidos internamente (×100 para velocidade, ×10 para torque)
 
 ### Rolo 2
 
-| Variável          | Tipo | Unidade | Descrição              | Faixa Válida | Valor Padrão | Incremento Sugerido |
-| ----------------- | ---- | ------- | ---------------------- | ------------ | ------------ | ------------------- |
-| `SpeedMax_rolo2`  | REAL | Hz      | Velocidade Máxima      | 0.0 - 100.0  | 60.0         | 0.1                 |
-| `SpeedMin_rolo2`  | REAL | Hz      | Velocidade Mínima      | 0.0 - 100.0  | 0.0          | 0.1                 |
-| `TorqueMax_rolo2` | REAL | %       | Torque Máximo (Limite) | 0.0 - 200.0  | 100.0        | 1.0                 |
+| Variável                 | Tipo | Unidade | Descrição                      | Faixa Válida | Valor Padrão | Incremento Sugerido |
+| ------------------------ | ---- | ------- | ------------------------------ | ------------ | ------------ | ------------------- |
+| `SpeedMax_rolo2`         | REAL | Hz      | Velocidade Máxima              | 0.0 - 100.0  | 60.0         | 0.1                 |
+| `SpeedMin_rolo2`         | REAL | Hz      | Velocidade Mínima              | 0.0 - 100.0  | 0.0          | 0.1                 |
+| `TorqueMax_rolo2`        | REAL | %       | Torque Máximo (Limite)         | 0.0 - 200.0  | 100.0        | 1.0                 |
+| `SpeedTorqueRatio_rolo2` | REAL | Hz/%    | Razão Alarme Velocidade/Torque | 0.1 - 2.0    | 0.5          | 0.05                |
 
 ### Rolo 3
 
-| Variável          | Tipo | Unidade | Descrição              | Faixa Válida | Valor Padrão | Incremento Sugerido |
-| ----------------- | ---- | ------- | ---------------------- | ------------ | ------------ | ------------------- |
-| `SpeedMax_rolo3`  | REAL | Hz      | Velocidade Máxima      | 0.0 - 100.0  | 60.0         | 0.1                 |
-| `SpeedMin_rolo3`  | REAL | Hz      | Velocidade Mínima      | 0.0 - 100.0  | 0.0          | 0.1                 |
-| `TorqueMax_rolo3` | REAL | %       | Torque Máximo (Limite) | 0.0 - 200.0  | 100.0        | 1.0                 |
+| Variável                 | Tipo | Unidade | Descrição                      | Faixa Válida | Valor Padrão | Incremento Sugerido |
+| ------------------------ | ---- | ------- | ------------------------------ | ------------ | ------------ | ------------------- |
+| `SpeedMax_rolo3`         | REAL | Hz      | Velocidade Máxima              | 0.0 - 100.0  | 60.0         | 0.1                 |
+| `SpeedMin_rolo3`         | REAL | Hz      | Velocidade Mínima              | 0.0 - 100.0  | 0.0          | 0.1                 |
+| `TorqueMax_rolo3`        | REAL | %       | Torque Máximo (Limite)         | 0.0 - 200.0  | 100.0        | 1.0                 |
+| `SpeedTorqueRatio_rolo3` | REAL | Hz/%    | Razão Alarme Velocidade/Torque | 0.1 - 2.0    | 0.5          | 0.05                |
 
-**Total de Variáveis de Entrada**: 9
+**Total de Variáveis de Entrada**: 12 (4 por rolo)
 
 ---
 
@@ -195,22 +202,22 @@ Botões e comandos que o operador pode acionar.
 
 | Categoria           | Quantidade | Tipo |
 | ------------------- | ---------- | ---- |
-| Entrada (Setpoints) | 9          | REAL |
+| Entrada (Setpoints) | 12         | REAL |
 | Monitoramento       | 15         | REAL |
 | Status/Alarmes      | 15         | BOOL |
 | Controle (Comandos) | 6          | BOOL |
-| **TOTAL**           | **45**     | -    |
+| **TOTAL**           | **48**     | -    |
 
 ### Distribuição por Rolo
 
 Cada rolo tem:
 
-- 3 variáveis REAL de entrada (setpoints)
+- 4 variáveis REAL de entrada (setpoints)
 - 5 variáveis REAL de monitoramento
 - 5 variáveis BOOL de status/alarme
 - 2 variáveis BOOL de controle
 
-**Total por Rolo**: 15 variáveis
+**Total por Rolo**: 16 variáveis
 
 ---
 
@@ -280,6 +287,11 @@ Cada rolo tem:
 │  │  Torque Máximo:      [ 100.0  ] %                        │   │
 │  │                      [- 1.0 -] [+ 1.0 +]                 │   │
 │  │                      Faixa: 0.0 - 200.0 %                │   │
+│  │                                                          │   │
+│  │  Razão Vel/Torque:   [  0.50  ] Hz/%                    │   │
+│  │                      [- 0.05 -] [+ 0.05 +]               │   │
+│  │                      Faixa: 0.1 - 2.0 Hz/%               │   │
+│  │                      (Ajuste alarme por características) │   │
 │  │                                                          │   │
 │  └──────────────────────────────────────────────────────────┘   │
 │                                                                 │
@@ -512,7 +524,7 @@ Máximo: 200.0 %
 
 ### Fase 1: Criação de Tags
 
-- [ ] Criar 9 tags REAL de entrada (SpeedMax, SpeedMin, TorqueMax × 3 rolos)
+- [ ] Criar 12 tags REAL de entrada (SpeedMax, SpeedMin, TorqueMax, SpeedTorqueRatio × 3 rolos)
 - [ ] Criar 15 tags REAL de monitoramento (5 × 3 rolos)
 - [ ] Criar 15 tags BOOL de status/alarme (5 × 3 rolos)
 - [ ] Criar 6 tags BOOL de controle (2 × 3 rolos)

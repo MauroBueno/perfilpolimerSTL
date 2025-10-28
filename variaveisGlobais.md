@@ -22,34 +22,39 @@ Este documento contém todas as variáveis necessárias para o projeto no Connec
 
 ### Setpoints por Rolo (Ajustáveis via HMI)
 
-| Variável        | Tipo | Valor Inicial | Descrição                              | Unidades |
-| --------------- | ---- | ------------- | -------------------------------------- | -------- |
-| TorqueMax_rolo1 | UINT | 1000          | Torque máximo para ajuste no PV800     | 0.1%     |
-| SpeedMax_rolo1  | UINT | 6000          | Velocidade máxima para ajuste no PV800 | 0.1 Hz   |
-| SpeedMin_rolo1  | UINT | 0             | Velocidade mínima para ajuste no PV800 | 0.1 Hz   |
-| TorqueMax_rolo2 | UINT | 1000          | Torque máximo rolo 2                   | 0.1%     |
-| SpeedMax_rolo2  | UINT | 6000          | Velocidade máxima rolo 2               | 0.1 Hz   |
-| SpeedMin_rolo2  | UINT | 0             | Velocidade mínima rolo 2               | 0.1 Hz   |
-| TorqueMax_rolo3 | UINT | 1000          | Torque máximo rolo 3                   | 0.1%     |
-| SpeedMax_rolo3  | UINT | 6000          | Velocidade máxima rolo 3               | 0.1 Hz   |
-| SpeedMin_rolo3  | UINT | 0             | Velocidade mínima rolo 3               | 0.1 Hz   |
+| Variável               | Tipo | Valor Inicial | Descrição                              | Unidades |
+| ---------------------- | ---- | ------------- | -------------------------------------- | -------- |
+| TorqueMax_rolo1        | REAL | 100.0         | Torque máximo para ajuste no PV800     | %        |
+| SpeedMax_rolo1         | REAL | 60.0          | Velocidade máxima para ajuste no PV800 | Hz       |
+| SpeedMin_rolo1         | REAL | 0.0           | Velocidade mínima para ajuste no PV800 | Hz       |
+| SpeedTorqueRatio_rolo1 | REAL | 0.5           | Razão velocidade/torque personalizada  | Hz/%     |
+| TorqueMax_rolo2        | REAL | 100.0         | Torque máximo rolo 2                   | %        |
+| SpeedMax_rolo2         | REAL | 60.0          | Velocidade máxima rolo 2               | Hz       |
+| SpeedMin_rolo2         | REAL | 0.0           | Velocidade mínima rolo 2               | Hz       |
+| SpeedTorqueRatio_rolo2 | REAL | 0.5           | Razão velocidade/torque personalizada  | Hz/%     |
+| TorqueMax_rolo3        | REAL | 100.0         | Torque máximo rolo 3                   | %        |
+| SpeedMax_rolo3         | REAL | 60.0          | Velocidade máxima rolo 3               | Hz       |
+| SpeedMin_rolo3         | REAL | 0.0           | Velocidade mínima rolo 3               | Hz/%     |
 
 ### Detecção de Mudanças (Valores Anteriores)
 
-| Variável           | Tipo | Valor Inicial | Descrição                             |
-| ------------------ | ---- | ------------- | ------------------------------------- |
-| TorqueMaxOld_rolo1 | UINT | 1000          | Valor antigo para detecção de mudança |
-| SpeedMaxOld_rolo1  | UINT | 6000          | Valor antigo para detecção de mudança |
-| SpeedMinOld_rolo1  | UINT | 0             | Valor antigo para detecção de mudança |
-| WriteNeeded_rolo1  | BOOL | FALSE         | Flag para necessidade de escrita      |
-| TorqueMaxOld_rolo2 | UINT | 1000          | Valor antigo para detecção de mudança |
-| SpeedMaxOld_rolo2  | UINT | 6000          | Valor antigo para detecção de mudança |
-| SpeedMinOld_rolo2  | UINT | 0             | Valor antigo para detecção de mudança |
-| WriteNeeded_rolo2  | BOOL | FALSE         | Flag para necessidade de escrita      |
-| TorqueMaxOld_rolo3 | UINT | 1000          | Valor antigo para detecção de mudança |
-| SpeedMaxOld_rolo3  | UINT | 6000          | Valor antigo para detecção de mudança |
-| SpeedMinOld_rolo3  | UINT | 0             | Valor antigo para detecção de mudança |
-| WriteNeeded_rolo3  | BOOL | FALSE         | Flag para necessidade de escrita      |
+| Variável                  | Tipo | Valor Inicial | Descrição                             |
+| ------------------------- | ---- | ------------- | ------------------------------------- |
+| TorqueMaxOld_rolo1        | REAL | 100.0         | Valor antigo para detecção de mudança |
+| SpeedMaxOld_rolo1         | REAL | 60.0          | Valor antigo para detecção de mudança |
+| SpeedMinOld_rolo1         | REAL | 0.0           | Valor antigo para detecção de mudança |
+| SpeedTorqueRatioOld_rolo1 | REAL | 0.5           | Valor antigo para detecção de mudança |
+| WriteNeeded_rolo1         | BOOL | FALSE         | Flag para necessidade de escrita      |
+| TorqueMaxOld_rolo2        | REAL | 100.0         | Valor antigo para detecção de mudança |
+| SpeedMaxOld_rolo2         | REAL | 60.0          | Valor antigo para detecção de mudança |
+| SpeedMinOld_rolo2         | REAL | 0.0           | Valor antigo para detecção de mudança |
+| SpeedTorqueRatioOld_rolo2 | REAL | 0.5           | Valor antigo para detecção de mudança |
+| WriteNeeded_rolo2         | BOOL | FALSE         | Flag para necessidade de escrita      |
+| TorqueMaxOld_rolo3        | REAL | 100.0         | Valor antigo para detecção de mudança |
+| SpeedMaxOld_rolo3         | REAL | 60.0          | Valor antigo para detecção de mudança |
+| SpeedMinOld_rolo3         | REAL | 0.0           | Valor antigo para detecção de mudança |
+| SpeedTorqueRatioOld_rolo3 | REAL | 0.5           | Valor antigo para detecção de mudança |
+| WriteNeeded_rolo3         | BOOL | FALSE         | Flag para necessidade de escrita      |
 
 ### Sistema de Retry e Recuperação de Erros
 
@@ -71,15 +76,16 @@ Este documento contém todas as variáveis necessárias para o projeto no Connec
 
 ### Limites e Constantes do Sistema
 
-| Variável                 | Tipo | Valor Inicial | Descrição                                         | Unidades |
-| ------------------------ | ---- | ------------- | ------------------------------------------------- | -------- |
-| SPEED_MAX_LIMIT          | REAL | 100.0         | Limite máximo de velocidade em Hz                 | Hz       |
-| SPEED_MIN_LIMIT          | REAL | 0.0           | Limite mínimo de velocidade em Hz                 | Hz       |
-| TORQUE_MAX_LIMIT         | REAL | 200.0         | Limite máximo de torque em %                      | %        |
-| TORQUE_MIN_LIMIT         | REAL | 0.0           | Limite mínimo de torque em %                      | %        |
-| SPEED_TORQUE_RATIO       | REAL | 0.5           | Razão mínima velocidade/torque (Hz/%)             | Hz/%     |
-| SPEED_TORQUE_ALARM_DELAY | TIME | T#5s          | Atraso antes de disparar alarme velocidade-torque | segundos |
-| ERROR_RECOVERY_TIME      | TIME | T#30s         | Tempo após o qual limpar flags de erro            | segundos |
+| Variável                     | Tipo | Valor Inicial | Descrição                                         | Unidades |
+| ---------------------------- | ---- | ------------- | ------------------------------------------------- | -------- |
+| SPEED_MAX_LIMIT              | REAL | 100.0         | Limite máximo de velocidade em Hz                 | Hz       |
+| SPEED_MIN_LIMIT              | REAL | 0.0           | Limite mínimo de velocidade em Hz                 | Hz       |
+| TORQUE_MAX_LIMIT             | REAL | 200.0         | Limite máximo de torque em %                      | %        |
+| TORQUE_MIN_LIMIT             | REAL | 0.0           | Limite mínimo de torque em %                      | %        |
+| SPEED_TORQUE_RATIO_MAX_LIMIT | REAL | 2.0           | Limite máximo da razão velocidade/torque          | Hz/%     |
+| SPEED_TORQUE_RATIO_MIN_LIMIT | REAL | 0.1           | Limite mínimo da razão velocidade/torque          | Hz/%     |
+| SPEED_TORQUE_ALARM_DELAY     | TIME | T#5s          | Atraso antes de disparar alarme velocidade-torque | segundos |
+| ERROR_RECOVERY_TIME          | TIME | T#30s         | Tempo após o qual limpar flags de erro            | segundos |
 
 ### Timers de Recuperação de Erros
 
@@ -235,6 +241,7 @@ _(Mesmas variáveis que CTRLROLO1, com sufixo `_rolo3` e Node := 3)_
 ### Variáveis para PV800
 
 - `TorqueMax`, `SpeedMax`, `SpeedMin` podem ser ajustadas na tela do HMI
+- `SpeedTorqueRatio` pode ser ajustada individualmente por rolo para adaptar o alarme às características de cada motor
 - Valores são validados e limitados antes da conversão para unidades do inversor
 
 ### Lógica de Escrita
@@ -247,9 +254,11 @@ _(Mesmas variáveis que CTRLROLO1, com sufixo `_rolo3` e Node := 3)_
 
 ### Sistema de Alarmes
 
-- `SpeedTorqueAlarm`: Detecta quando velocidade < torque% × SPEED_TORQUE_RATIO
+- `SpeedTorqueAlarm`: Detecta quando velocidade < torque% × SpeedTorqueRatio_roloX
+- Razão personalizada por rolo (padrão 0.5 Hz/%, ajustável entre 0.1 e 2.0)
 - Só ativo quando torque > 20% e drive habilitado
 - Delay de 5 segundos para evitar falsos positivos
+- Permite ajuste fino para diferentes características de motor/carga por rolo
 
 ### Parâmetros P0408/P0409/P0410
 

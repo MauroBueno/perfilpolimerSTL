@@ -24,16 +24,17 @@ IF ReadTimer_P0408_P0410_rolo3.Q THEN
 END_IF;
 
 // Detect changes in HMI values and compare with drive values to set write flag
-IF TorqueMax_rolo3 <> TorqueMaxOld_rolo3 OR SpeedMax_rolo3 <> SpeedMaxOld_rolo3 OR SpeedMin_rolo3 <> SpeedMinOld_rolo3 THEN
+IF TorqueMax_rolo3 <> TorqueMaxOld_rolo3 OR SpeedMax_rolo3 <> SpeedMaxOld_rolo3 OR SpeedMin_rolo3 <> SpeedMinOld_rolo3 OR SpeedTorqueRatio_rolo3 <> SpeedTorqueRatioOld_rolo3 THEN
     TorqueMaxOld_rolo3 := TorqueMax_rolo3;
     SpeedMaxOld_rolo3 := SpeedMax_rolo3;
     SpeedMinOld_rolo3 := SpeedMin_rolo3;
+    SpeedTorqueRatioOld_rolo3 := SpeedTorqueRatio_rolo3;
     IF UINT(TorqueMax_rolo3 * 10) <> MaxTorqueRead_rolo3 OR UINT(SpeedMax_rolo3 * 100) <> MaxSpeedRead_rolo3 OR UINT(SpeedMin_rolo3 * 100) <> MinSpeedRead_rolo3 THEN
         WriteNeeded_rolo3 := TRUE;
     END_IF;
 END_IF;
 
-// Parameter validation and bounds checking before scaling
+// Update set values from PV800 globals
 IF SpeedMax_rolo3 > SPEED_MAX_LIMIT THEN
     SpeedMax_rolo3 := SPEED_MAX_LIMIT;
 ELSIF SpeedMax_rolo3 < SPEED_MIN_LIMIT THEN
@@ -50,6 +51,12 @@ IF TorqueMax_rolo3 > TORQUE_MAX_LIMIT THEN
     TorqueMax_rolo3 := TORQUE_MAX_LIMIT;
 ELSIF TorqueMax_rolo3 < TORQUE_MIN_LIMIT THEN
     TorqueMax_rolo3 := TORQUE_MIN_LIMIT;
+END_IF;
+
+IF SpeedTorqueRatio_rolo3 > SPEED_TORQUE_RATIO_MAX_LIMIT THEN
+    SpeedTorqueRatio_rolo3 := SPEED_TORQUE_RATIO_MAX_LIMIT;
+ELSIF SpeedTorqueRatio_rolo3 < SPEED_TORQUE_RATIO_MIN_LIMIT THEN
+    SpeedTorqueRatio_rolo3 := SPEED_TORQUE_RATIO_MIN_LIMIT;
 END_IF;
 
 // Convert validated values to inverter units
@@ -208,7 +215,7 @@ CASE ReadStep_rolo3 OF
             OutputCurrentScaled_rolo3 := TempReal_rolo3 / 10.0;
             
             IF TorquePercentScaled_rolo3 > 20.0 AND EnableDrive_rolo3 THEN
-                TempReal_rolo3 := TorquePercentScaled_rolo3 * SPEED_TORQUE_RATIO;
+                TempReal_rolo3 := TorquePercentScaled_rolo3 * SpeedTorqueRatio_rolo3;
                 IF OutputFreqScaled_rolo3 < TempReal_rolo3 THEN
                     SpeedTorqueAlarmTimer_rolo3(IN := TRUE, PT := SPEED_TORQUE_ALARM_DELAY);
                     IF SpeedTorqueAlarmTimer_rolo3.Q THEN

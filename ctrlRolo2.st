@@ -35,10 +35,11 @@ IF ReadTimer_P0408_P0410_rolo2.Q THEN
 END_IF;
 
 // Detect changes in HMI values and compare with drive values to set write flag
-IF TorqueMax_rolo2 <> TorqueMaxOld_rolo2 OR SpeedMax_rolo2 <> SpeedMaxOld_rolo2 OR SpeedMin_rolo2 <> SpeedMinOld_rolo2 THEN
+IF TorqueMax_rolo2 <> TorqueMaxOld_rolo2 OR SpeedMax_rolo2 <> SpeedMaxOld_rolo2 OR SpeedMin_rolo2 <> SpeedMinOld_rolo2 OR SpeedTorqueRatio_rolo2 <> SpeedTorqueRatioOld_rolo2 THEN
     TorqueMaxOld_rolo2 := TorqueMax_rolo2;
     SpeedMaxOld_rolo2 := SpeedMax_rolo2;
     SpeedMinOld_rolo2 := SpeedMin_rolo2;
+    SpeedTorqueRatioOld_rolo2 := SpeedTorqueRatio_rolo2;
     // Check if different from drive values
     IF UINT(TorqueMax_rolo2 * 10) <> MaxTorqueRead_rolo2 OR UINT(SpeedMax_rolo2 * 100) <> MaxSpeedRead_rolo2 OR UINT(SpeedMin_rolo2 * 100) <> MinSpeedRead_rolo2 THEN
         WriteNeeded_rolo2 := TRUE;
@@ -57,13 +58,20 @@ END_IF;
 IF SpeedMin_rolo2 < SPEED_MIN_LIMIT THEN
     SpeedMin_rolo2 := SPEED_MIN_LIMIT;
 ELSIF SpeedMin_rolo2 > SpeedMax_rolo2 THEN
-    SpeedMin_rolo2 := SpeedMax_rolo2; // Ensure min <= max
+    SpeedMin_rolo2 := SpeedMax_rolo2;
 END_IF;
 
 IF TorqueMax_rolo2 > TORQUE_MAX_LIMIT THEN
     TorqueMax_rolo2 := TORQUE_MAX_LIMIT;
 ELSIF TorqueMax_rolo2 < TORQUE_MIN_LIMIT THEN
     TorqueMax_rolo2 := TORQUE_MIN_LIMIT;
+END_IF;
+
+// Validate SpeedTorqueRatio per roller
+IF SpeedTorqueRatio_rolo2 > SPEED_TORQUE_RATIO_MAX_LIMIT THEN
+    SpeedTorqueRatio_rolo2 := SPEED_TORQUE_RATIO_MAX_LIMIT;
+ELSIF SpeedTorqueRatio_rolo2 < SPEED_TORQUE_RATIO_MIN_LIMIT THEN
+    SpeedTorqueRatio_rolo2 := SPEED_TORQUE_RATIO_MIN_LIMIT;
 END_IF;
 
 // Convert validated values to inverter units
@@ -226,24 +234,19 @@ CASE ReadStep_rolo2 OF
             TempReal_rolo2 := UINT_TO_REAL(OutputCurrent_rolo2);
             OutputCurrentScaled_rolo2 := TempReal_rolo2 / 10.0;
             
-            // Speed vs Torque monitoring logic
-            // Calculate expected minimum speed based on torque and ratio
-            // If torque is high but speed is low, it may indicate motor stall or insufficient power
-            IF TorquePercentScaled_rolo2 > 20.0 AND EnableDrive_rolo2 THEN  // Only monitor when drive is enabled and torque > 20%
-                TempReal_rolo2 := TorquePercentScaled_rolo2 * SPEED_TORQUE_RATIO;  // Expected min speed = torque% * ratio
+            // Speed vs Torque monitoring logic with per-roller ratio
+            IF TorquePercentScaled_rolo2 > 20.0 AND EnableDrive_rolo2 THEN
+                TempReal_rolo2 := TorquePercentScaled_rolo2 * SpeedTorqueRatio_rolo2;
                 IF OutputFreqScaled_rolo2 < TempReal_rolo2 THEN
-                    // Speed is too low for the torque level - start alarm timer
                     SpeedTorqueAlarmTimer_rolo2(IN := TRUE, PT := SPEED_TORQUE_ALARM_DELAY);
                     IF SpeedTorqueAlarmTimer_rolo2.Q THEN
                         SpeedTorqueAlarm_rolo2 := TRUE;
                     END_IF;
                 ELSE
-                    // Speed is adequate - reset alarm
                     SpeedTorqueAlarm_rolo2 := FALSE;
                     SpeedTorqueAlarmTimer_rolo2(IN := FALSE);
                 END_IF;
             ELSE
-                // Reset alarm when drive disabled or low torque
                 SpeedTorqueAlarm_rolo2 := FALSE;
                 SpeedTorqueAlarmTimer_rolo2(IN := FALSE);
             END_IF;
