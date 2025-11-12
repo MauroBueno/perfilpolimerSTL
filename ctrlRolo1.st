@@ -1,17 +1,6 @@
 (* ST Program for CFW500 Parameter Control and Monitoring - Rolo 1 *)
 (* For detailed Modbus register mapping and parameter documentation, see CFW500_Modbus_Mapping.md *)
-(* Assumptions:
-- Single inverter at Node = 1.
-- Registers are direct: Pxxxx at holding register xxxx.
-- Scaling: Values are integers; for decimals (e.g., P0009 in 0.1%), divide by 10.0 for REAL display.
-- P0498 assumed as UINT (0/1 for disable/enable); adjust if different.
-- Writes triggered by WriteTrigger BOOL (e.g., from HMI or logic).
-- Reads every 10 second for P0009, P0002, P0003 (torque, output frequency, output current).
-- Reads every 10 seconds for P0409, P0410.
-- Verification every 10 seconds for critical parameters (P0100, speeds, torques) to force Vector Sensorless and limits.
-- Use separate MSG_MODBUS instances to avoid conflicts.
-- Add error handling (e.g., check .Q and .Error) as needed.
-*)
+(* Node = 1, Channel = 2, Modbus RTU *)
 
 // Periodic Verification Timer (every 10s to check critical parameters)
 VerificationTimer_rolo1(IN := TRUE, PT := T#10s);
@@ -47,7 +36,6 @@ IF TorqueMax_rolo1 <> TorqueMaxOld_rolo1 OR SpeedMax_rolo1 <> SpeedMaxOld_rolo1 
     END_IF;
 END_IF;
 
-// Update set values from PV800 globals
 // Parameter validation and bounds checking before scaling
 // Ensures safe operation by clamping HMI inputs to valid ranges
 IF SpeedMax_rolo1 > SPEED_MAX_LIMIT THEN
@@ -59,7 +47,7 @@ END_IF;
 IF SpeedMin_rolo1 < SPEED_MIN_LIMIT THEN
     SpeedMin_rolo1 := SPEED_MIN_LIMIT;
 ELSIF SpeedMin_rolo1 > SpeedMax_rolo1 THEN
-    SpeedMin_rolo1 := SpeedMax_rolo1;
+    SpeedMin_rolo1 := SpeedMax_rolo1; // Ensure min <= max
 END_IF;
 
 IF TorqueMax_rolo1 > TORQUE_MAX_LIMIT THEN
@@ -159,7 +147,7 @@ IF WriteNeeded_rolo1 OR WriteTrigger_rolo1 THEN
     END_CASE;
 END_IF;
 
-// Lógica para flags de erro e status
+// Error and status flags logic
 IF WriteMsg_rolo1.Q THEN
     WriteError_rolo1 := FALSE;
     CommunicationOK_rolo1 := TRUE;
@@ -185,10 +173,10 @@ IF CommunicationOK_rolo1 THEN
     IF ErrorRecoveryTimer_rolo1.Q THEN
         WriteError_rolo1 := FALSE;
         ReadError_rolo1 := FALSE;
-        ErrorRecoveryTimer_rolo1(IN := FALSE);
+        ErrorRecoveryTimer_rolo1(IN := FALSE); // Reset timer
     END_IF;
 ELSE
-    ErrorRecoveryTimer_rolo1(IN := FALSE);
+    ErrorRecoveryTimer_rolo1(IN := FALSE); // Reset timer on communication failure
 END_IF;
 
 // Read Logic (sequential to avoid overloading Modbus channel)
@@ -207,15 +195,15 @@ CASE ReadStep_rolo1 OF
             TorquePercentScaled_rolo1 := TempReal_rolo1 / 10.0;
             ReadStep_rolo1 := 2;
             ModbusBusy := FALSE;
-            ReadRetryCount_rolo1 := 0;
+            ReadRetryCount_rolo1 := 0; // Reset retry counter on success
         ELSIF ReadRetryCount_rolo1 < MAX_RETRIES THEN
             ReadRetryCount_rolo1 := ReadRetryCount_rolo1 + 1;
-            ModbusBusy := FALSE;
+            ModbusBusy := FALSE; // Release bus for retry
         ELSE
-            ReadStep_rolo1 := 2;
+            ReadStep_rolo1 := 2; // Advance on max retries
             ModbusBusy := FALSE;
             ReadError_rolo1 := TRUE;
-            ReadRetryCount_rolo1 := 0;
+            ReadRetryCount_rolo1 := 0; // Reset for next operation
         END_IF;
     2:  // Read P0002 and P0003
         IF NOT ModbusBusy THEN
@@ -234,23 +222,18 @@ CASE ReadStep_rolo1 OF
             OutputCurrentScaled_rolo1 := TempReal_rolo1 / 10.0;
             
             // Speed vs Torque monitoring logic with per-roller ratio
-            // Calculate expected minimum speed based on torque and custom ratio
-            // If torque is high but speed is low, it may indicate motor stall or insufficient power
-            IF TorquePercentScaled_rolo1 > 20.0 AND EnableDrive_rolo1 THEN  // Only monitor when drive is enabled and torque > 20%
-                TempReal_rolo1 := TorquePercentScaled_rolo1 * SpeedTorqueRatio_rolo1;  // Expected min speed = torque% * custom ratio
+            IF TorquePercentScaled_rolo1 > 20.0 AND EnableDrive_rolo1 THEN
+                TempReal_rolo1 := TorquePercentScaled_rolo1 * SpeedTorqueRatio_rolo1;
                 IF OutputFreqScaled_rolo1 < TempReal_rolo1 THEN
-                    // Speed is too low for the torque level - start alarm timer
                     SpeedTorqueAlarmTimer_rolo1(IN := TRUE, PT := SPEED_TORQUE_ALARM_DELAY);
                     IF SpeedTorqueAlarmTimer_rolo1.Q THEN
                         SpeedTorqueAlarm_rolo1 := TRUE;
                     END_IF;
                 ELSE
-                    // Speed is adequate - reset alarm
                     SpeedTorqueAlarm_rolo1 := FALSE;
                     SpeedTorqueAlarmTimer_rolo1(IN := FALSE);
                 END_IF;
             ELSE
-                // Reset alarm when drive disabled or low torque
                 SpeedTorqueAlarm_rolo1 := FALSE;
                 SpeedTorqueAlarmTimer_rolo1(IN := FALSE);
             END_IF;
@@ -258,10 +241,10 @@ CASE ReadStep_rolo1 OF
             ReadStep_rolo1 := 0;  // Reset for next cycle
             ReadTrigger_rolo1 := FALSE;
             ModbusBusy := FALSE;
-            ReadRetryCount_rolo1 := 0;
+            ReadRetryCount_rolo1 := 0; // Reset retry counter on success
         ELSIF ReadRetryCount_rolo1 < MAX_RETRIES THEN
             ReadRetryCount_rolo1 := ReadRetryCount_rolo1 + 1;
-            ModbusBusy := FALSE;
+            ModbusBusy := FALSE; // Release bus for retry
         ELSE
             ReadStep_rolo1 := 0; // Reset on max retries
             ReadTrigger_rolo1 := FALSE;
@@ -282,9 +265,9 @@ CASE ReadStep_P0408_P0410_rolo1 OF
             ReadMsg_P0408_P0410_rolo1(IN := TRUE, LocalCfg := LocalCfg_rolo1, TargetCfg := TargetCfg_rolo1, LocalAddr := LocalAddr_rolo1);
         END_IF;
         IF ReadMsg_P0408_P0410_rolo1.Q THEN
-            P0408_rolo1 := LocalAddr_rolo1[1];  // Boolean: 0 or 1 (Vector Sensorless Enable)
-            P0409_rolo1 := LocalAddr_rolo1[2];  // Stator Resistance (Rs) in ohms
-            P0410_rolo1 := LocalAddr_rolo1[3];  // Magnetizing Current (Im) in amperes
+            P0408_rolo1 := LocalAddr_rolo1[1];  // Boolean: 0 or 1 (Autotune Enable)
+            P0409_rolo1 := LocalAddr_rolo1[2];  // Stator Resistance (Rs) in 0.01 ohm
+            P0410_rolo1 := LocalAddr_rolo1[3];  // Magnetizing Current (Im) in 0.01 A
             
             // Scale P0408 (Boolean)
             TempReal_rolo1 := UINT_TO_REAL(P0408_rolo1);
@@ -304,14 +287,13 @@ CASE ReadStep_P0408_P0410_rolo1 OF
         ELSIF ReadRetryCount_P0408_P0410_rolo1 < MAX_RETRIES THEN
             ReadRetryCount_P0408_P0410_rolo1 := ReadRetryCount_P0408_P0410_rolo1 + 1;
             ModbusBusy := FALSE; // Release bus for retry
-            // Will retry on next cycle
         ELSE
             ReadStep_P0408_P0410_rolo1 := 0; // Reset on max retries
             ModbusBusy := FALSE;
             ReadError_rolo1 := TRUE;
             ReadRetryCount_P0408_P0410_rolo1 := 0; // Reset for next operation
         END_IF;
-    END_CASE;
+END_CASE;
 
 // Verification Logic (sequential to avoid overloading Modbus channel, check and force parameters)
 CASE VerificationStep_rolo1 OF
@@ -440,4 +422,4 @@ CASE VerificationStep_rolo1 OF
             ModbusBusy := FALSE;
             VerificationRetryCount_rolo1 := 0;
         END_IF;
-    END_CASE;
+END_CASE;
